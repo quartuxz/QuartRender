@@ -25,9 +25,38 @@ void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned 
 	}
 
 
+
 	pThis->m_rendererConstructed.store(true);
-	while (true) {
+	while (!pThis->m_end.load()) {
 		try{
+
+			bool* localReady = &pThis->m_ready;
+			std::unique_lock<std::mutex> lk(pThis->m_lock);
+			pThis->m_processCond.wait(lk, [localReady]()noexcept {return *localReady; });
+
+			//signal back routine
+			auto localProcessedCond = &pThis->m_processedCond;
+			auto localUniqueLock = &lk;
+			auto localProcessCond = &pThis->m_processCond;
+			std::function<void()> signalBack = std::function<void()>([localProcessCond, localProcessedCond, localUniqueLock]()
+				{
+					*localProcessedCond = true; 
+					localUniqueLock->unlock();
+					localProcessCond->notify_one();
+				});
+
+			if (pThis->m_end.load()) {
+				signalBack();
+				break;
+			}
+			pThis->m_ready = false;
+
+			pThis->m_fn();
+			glfwPollEvents();
+
+			signalBack();
+
+			/* //deprecated non conditional variable code
 			while (!pThis->m_proccessFunction.load() && !pThis->m_end.load()) {
 
 				glfwPollEvents();
@@ -58,6 +87,7 @@ void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned 
 			//lk.unlock();
 			//YONDER!!!
 			//pThis->m_processCond.notify_one();
+			*/
 		}
 		catch (const std::exception&e) {
 			LOG_TO_CONSOLE_COND("ERROR IN RENDERING THREAD!!!");
@@ -76,7 +106,7 @@ void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned 
 
 void RendererThreadManager::m_signalThread()
 {
-
+	/*
 	LOG_TO_CONSOLE_COND("thread signalling started.");
 	m_proccessFunction.store(true);
 	while (!m_processed.load()) {
@@ -87,8 +117,8 @@ void RendererThreadManager::m_signalThread()
 	}
 	m_processed.store(false);
 	LOG_TO_CONSOLE_COND("thread signalling ended.");
-	//deprecated conditional var code:
-	/*
+	*/
+
 	{
 		std::lock_guard<std::mutex> lk(m_lock);
 		m_ready = true;
@@ -97,10 +127,9 @@ void RendererThreadManager::m_signalThread()
 
 	{
 		std::unique_lock<std::mutex> lk(m_lock);
-		m_processCond.wait(lk, [this]() {return m_processed; });
-		m_processed = false;
+		m_processCond.wait(lk, [this]()noexcept {return m_processedCond; });
+		m_processedCond = false;
 	}
-	*/
 }
 
 //needs renderer sync
@@ -171,6 +200,7 @@ bool RendererThreadManager::getAndAllowClose()
 	}
 	if (m_renderer->windowShouldClose()) {
 		m_end.store(true);
+		m_signalThread();
 		return true;
 	}
 	return false;
