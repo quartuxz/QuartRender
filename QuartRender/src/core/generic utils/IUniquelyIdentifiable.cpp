@@ -2,7 +2,7 @@
 
 unsigned long long IUniquelyIdentifiable::m_currentCounter = 0;
 
-IUniquelyIdentifiable::IUniquelyIdentifiable():
+IUniquelyIdentifiable::IUniquelyIdentifiable()noexcept:
 	m_ID(m_currentCounter++)
 {
 }
