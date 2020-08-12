@@ -6,9 +6,9 @@ class IUniquelyIdentifiable {
 private:
 	static uniqueID m_currentCounter;
 protected:
-	uniqueID m_ID;
+	const uniqueID m_ID;
 
-	IUniquelyIdentifiable();
+	IUniquelyIdentifiable()noexcept;
 public:
 	uniqueID getID()const noexcept;
 	virtual ~IUniquelyIdentifiable();

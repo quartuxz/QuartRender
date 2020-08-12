@@ -183,6 +183,7 @@
     <ClInclude Include="src\core\ShaderProgram.h" />
     <ClInclude Include="src\core\Texture.h" />
     <ClInclude Include="src\core\utilsGL.h" />
+    <ClInclude Include="src\test\IUniquelyIdentifiableTest.h" />
     <ClInclude Include="src\vendor\imgui\imconfig.h" />
     <ClInclude Include="src\vendor\imgui\imgui.h" />
     <ClInclude Include="src\vendor\imgui\imgui_impl_glfw.h" />

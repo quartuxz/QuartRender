@@ -44,6 +44,7 @@ void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned 
 					localUniqueLock->unlock();
 					localProcessCond->notify_one();
 				});
+			//signal back routine END
 
 			if (pThis->m_end.load()) {
 				signalBack();
@@ -132,6 +133,12 @@ void RendererThreadManager::m_signalThread()
 	}
 }
 
+void RendererThreadManager::m_signalEndThread()
+{
+	m_end.store(true);
+	m_signalThread();
+}
+
 //needs renderer sync
 RendererThreadManager::RendererThreadManager(unsigned int sizex, unsigned int sizey, RendererTypes rendererType):
 	m_rendererType(rendererType),
@@ -199,8 +206,7 @@ bool RendererThreadManager::getAndAllowClose()
 		return true;
 	}
 	if (m_renderer->windowShouldClose()) {
-		m_end.store(true);
-		m_signalThread();
+		m_signalEndThread();
 		return true;
 	}
 	return false;
@@ -222,6 +228,6 @@ const std::vector<std::uint8_t>* RendererThreadManager::getImageBuffer() const n
 
 RendererThreadManager::~RendererThreadManager()
 {
-	m_end.store(true);
+	m_signalEndThread();
 	m_thread.join();
 }

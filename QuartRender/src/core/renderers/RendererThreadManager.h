@@ -45,7 +45,9 @@ private:
 
 	static void m_threadFunc(RendererThreadManager* pThis, unsigned int sizex, unsigned int sizey, RendererTypes rendererType);
 
+
 	void m_signalThread();
+	void m_signalEndThread();
 public:
 
 	//non-copyable or movable

@@ -17,6 +17,8 @@
 #include "src/test/TestDrawable.h"
 
 #include "src/test/TestDrawableFactory.h"
+#include "src/test/IUniquelyIdentifiableTest.h"
+
 
 static const char* teststr = "hello";
 
@@ -30,6 +32,20 @@ static TestDrawableFactory fac;
 #define GET_RENDERER_MULT(rendererHandle) static_cast<RendererThreadManager*>(rendererHandle)
 #define GET_ERROR_LOG(errorLogHandle) static_cast<ErrorLog*>(errorLogHandle)
 
+
+const char* runTests()
+{
+    static std::string testThatFailed = "";
+    if (testThatFailed != "") {
+        return "ERROR: runTests called more than once!";
+    }
+    testThatFailed = "once";
+    if (!runIUniquelyIdentifiableTest(testThatFailed)) {
+        return testThatFailed.c_str();
+    }
+
+    return "passed";
+}
 
 int drawTest(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawableName, float posx, float posy)
 {

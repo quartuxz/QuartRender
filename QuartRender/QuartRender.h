@@ -40,8 +40,11 @@ extern "C" {
 
 
 	//tests (USE std::cout/clog/cerr but only for testing) never use these functions in final product
-	//drawTest, testDrawableName does nothing, it is meant to show the true form of a function like this one, where the name of a 
-	//registered drawable is passed in to specify the form of the IDrawable(i.e "earth" displays a sphere/circle with earth-like visuals, as long as "earth" is registered and described)
+		//run after initQuartRender but before anything else
+	QUARTRENDER_API const char* runTests();
+
+		//drawTest, testDrawableName does nothing, it is meant to show the true form of a function like this one, where the name of a 
+		//registered drawable is passed in to specify the form of the IDrawable(i.e "earth" displays a sphere/circle with earth-like visuals, as long as "earth" is registered and described)
 	QUARTRENDER_API int drawTest(RendererHandle renderer, ErrorLogHandle errorLog,char *testDrawableName, float posx, float posy);
 	QUARTRENDER_API int destroyAllDrawTests();
 

@@ -108,6 +108,9 @@
     <ClInclude Include="src\core\drawables\factories\IDrawableFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\test\IUniquelyIdentifiableTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
