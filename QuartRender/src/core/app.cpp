@@ -98,11 +98,11 @@ static void runAll() {
 
         ShaderProgram program("./render_res/shaders/testVert.glsl", "./render_res/shaders/testFrag.glsl");
 
-        auto u_color = program.getUniformHandler<UniformTypes::FLOAT_4>("u_color");
+        auto u_color = program.getUniformHandle<UniformTypes::FLOAT_4>("u_color");
         u_color->setUniform(0.5f,0.5f,0.7f,1.0f);
-        auto u_texture = program.getUniformHandler<UniformTypes::INT_1>("u_tex");
+        auto u_texture = program.getUniformHandle<UniformTypes::INT_1>("u_tex");
         u_texture->setUniform(0);
-        auto u_MVP = program.getUniformHandler<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
+        auto u_MVP = program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
         u_MVP->setUniform(mvp);
 
         Texture texture("./render_res/tex/cryo_area_1.png");

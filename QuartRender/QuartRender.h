@@ -25,7 +25,7 @@ extern "C" {
 	QUARTRENDER_API void getRenderImage(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey);
 
 	//TODO: implement this
-	QUARTRENDER_API void getLogString(ErrorLogHandle errorLog, char* str, unsigned int len);
+	QUARTRENDER_API void getLogString(ErrorLogHandle errorLog, char* str, unsigned int *len);
 
 	//destruction
 	QUARTRENDER_API int destroyRenderer(RendererHandle renderer);
@@ -48,9 +48,13 @@ extern "C" {
 	QUARTRENDER_API int drawTest(RendererHandle renderer, ErrorLogHandle errorLog,char *testDrawableName, float posx, float posy);
 	QUARTRENDER_API int destroyAllDrawTests();
 
+	QUARTRENDER_API int addTestError(ErrorLogHandle errorLog);
+
 	QUARTRENDER_API int startTestRenderer(unsigned int sizex, unsigned int sizey);
 	QUARTRENDER_API int renderImageTest(const std::uint8_t**imgbuf, unsigned int* sizex, unsigned int* sizey);
 	QUARTRENDER_API int stopTestRenderer();
+
+	QUARTRENDER_API void testStringFunc(char* out, unsigned int *len);
 
 	QUARTRENDER_API int testFunc(const char*);
 	QUARTRENDER_API void imageTest(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey);

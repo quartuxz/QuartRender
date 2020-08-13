@@ -35,6 +35,7 @@ static TestDrawableFactory fac;
 
 const char* runTests()
 {
+
     static std::string testThatFailed = "";
     if (testThatFailed != "") {
         return "ERROR: runTests called more than once!";
@@ -62,6 +63,12 @@ int drawTest(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawabl
 int destroyAllDrawTests()
 {
 
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+int addTestError(ErrorLogHandle errorLog)
+{
+    GET_ERROR_LOG(errorLog)->log(std::runtime_error("HELLO MY FRIEND!!:D"));
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
@@ -200,9 +207,27 @@ void windowTest()
     mainNOT();
 }
 
-void getLogString(ErrorLogHandle errorLog, char* str, unsigned int len)
+void testStringFunc(char* out, unsigned int* len)
 {
-        
+    const char start[] = "testfun";
+    if (out == nullptr) {
+        *len = strlen(start) + 1;
+    }
+    else {
+        strcpy_s(out, *len, start);
+    }
+}
+
+void getLogString(ErrorLogHandle errorLog, char* str, unsigned int *len)
+{
+    std::string logString = GET_ERROR_LOG(errorLog)->getLog();
+
+    if (str == nullptr) {
+        *len = logString.size()+1;
+    }
+    else {
+        strcpy_s(str,*len,logString.c_str());
+    }
 }
 
 int destroyRenderer(RendererHandle renderer)

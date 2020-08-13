@@ -6,7 +6,7 @@
 
 #include "../core/drawables/IVariableDrawable.h"
 
-class TestDrawable :
+class TestDrawable final :
     public IDrawable,
     public IVariableDrawable<glm::mat4>
 {
@@ -16,6 +16,8 @@ private:
     ShaderProgram program;
     VertexBuffer vertexBuffer;
 
+    UniformGL<UniformTypes::FLOAT_4>* u_color;
+    UniformGL<UniformTypes::FLOAT_MAT_4x4>* u_MVP;
 public:
     TestDrawable();
 

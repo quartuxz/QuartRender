@@ -26,6 +26,9 @@ TestDrawable::TestDrawable() :
     layout.addBufferLayoutElement(BufferLayoutElement(2, GL_FLOAT, GL_FALSE));
     layout.addBufferLayoutElement(BufferLayoutElement(2, GL_FLOAT, GL_FALSE));
     vertexArray.addBuffer(&vertexBuffer, layout);
+
+    u_color = program.getUniformHandle<UniformTypes::FLOAT_4>("u_color");
+    u_MVP = program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
 }
 
 void TestDrawable::addVariation(const glm::mat4& modelTrans)
@@ -50,12 +53,9 @@ void TestDrawable::draw(glm::mat4 viewProj)
     glm::mat4 mvp = viewProj * m_modelTransform;
 
     LOG_TO_CONSOLE_COND("mvp calculated.");
-    auto u_color = program.getUniformHandler<UniformTypes::FLOAT_4>("u_color");
     u_color->setUniform(0.5f, 0.5f, 0.7f, 1.0f);
-    auto u_MVP = program.getUniformHandler<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
     u_MVP->setUniform(mvp);
     LOG_TO_CONSOLE_COND("uniforms set.");
-
 
     program.bind();
     vertexArray.bind();

@@ -62,7 +62,7 @@ public:
 
 	//TAKES CARE OF DELETING THE POINTER RETURNED(DELETION HAPPENS WHEN THE PARENT SHADER PROGRAM CALL ITS DESTRUCTOR!)
 	template<UniformTypes uniformType, bool throwNotFound = true>
-	UniformGL<uniformType> *getUniformHandler(std::string uniformName) {
+	UniformGL<uniformType> *getUniformHandle(std::string uniformName) {
 		THROW_ERRORS_GL(GLint uniformID = glGetUniformLocation(m_shaderProgramID, uniformName.c_str()));
 		if constexpr(throwNotFound) {
 			if (uniformID == -1) {

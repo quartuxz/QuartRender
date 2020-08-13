@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include "../../utilsGL.h"
 
 #include "glm/glm.hpp"
 #include "../../renderers/RendererThreadManager.h"
@@ -25,14 +26,18 @@ public:
 		drawable_t* tempTestDrawable;
 		if (m_testDrawablesPerRenderer.contains(renderer->getID())) {
 			tempTestDrawable = m_testDrawablesPerRenderer[renderer->getID()];
+
 		}
 		else {
+			LOG_TO_CONSOLE("ALLOC!!!");
 			renderer->executeOnThread([&tempTestDrawable, this]() {tempTestDrawable = m_getNewDrawable(); });
 			m_testDrawablesPerRenderer[renderer->getID()] = tempTestDrawable;
 		}
 
 		tempTestDrawable->addVariation(variation);
 
+
+		
 
 		renderer->addDrawable(tempTestDrawable);
 	}
