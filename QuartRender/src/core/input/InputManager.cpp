@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "../utilsGL.h"
 #include <thread>
 #include <map>
 #include <vector>
@@ -10,12 +11,12 @@ static std::vector<InputManager*> unregisteredInputManagers;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	auto threadid = std::this_thread::get_id();
+	THIS_IMANAGER->m_keyInputInstances.push(KeyboardInput{key,scancode,action,mods, THIS_IMANAGER->m_IMGUIWantsKeyboard, true});
 }
 
 InputManager::InputManager()noexcept
 {
-	m_windowIsOpen.store(true);
+	m_isValid.store(true);
 }
 
 void InputManager::registerInputManagerInThread()
@@ -25,7 +26,7 @@ void InputManager::registerInputManagerInThread()
 
 void InputManager::unregisterInputManagerInThread()
 {
-	THIS_IMANAGER->m_windowIsOpen.store(false);
+	THIS_IMANAGER->m_isValid.store(false);
 	unregisteredInputManagers.push_back(THIS_IMANAGER);
 	inputManagers.erase(std::this_thread::get_id());
 }
@@ -46,7 +47,27 @@ InputManager* InputManager::getInputManagerForThread()
 	return THIS_IMANAGER;
 }
 
-bool InputManager::isWindowOpen()noexcept
+void InputManager::setIMGUIWantsKeyboard(bool value)
 {
-	return m_windowIsOpen.load();
+	m_IMGUIWantsKeyboard = value;
+}
+
+
+KeyboardInput InputManager::getAndPopOldestInput()noexcept
+{
+	KeyboardInput retval;
+	if (m_keyInputInstances.empty()) {
+		retval.isValid = false;
+	}
+	else {
+		retval = m_keyInputInstances.front();
+		m_keyInputInstances.pop();
+	}
+
+	return retval;
+}
+
+bool InputManager::isValid()noexcept
+{
+	return m_isValid.load();
 }

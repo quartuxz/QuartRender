@@ -29,7 +29,6 @@ public:
 
 		}
 		else {
-			LOG_TO_CONSOLE("ALLOC!!!");
 			renderer->executeOnThread([&tempTestDrawable, this]() {tempTestDrawable = m_getNewDrawable(); });
 			m_testDrawablesPerRenderer[renderer->getID()] = tempTestDrawable;
 		}

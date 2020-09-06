@@ -7,7 +7,7 @@
 #include <functional>
 #include <sstream>
 #include "IRenderer.h"
-#include "../InputManager.h"
+#include "../input/InputManager.h"
 
 
 //TODO: implement dynamic resizing
@@ -28,17 +28,14 @@ private:
 	
 	//signals that the RendererThreadManager destructor is called and the thread must cease execution. Always true if window is closed.
 	std::atomic<bool> m_end = false;
+
+	std::atomic<bool> m_finishedDestruction = false;
+
+	//signals that there was an exception in thread
+	std::atomic<bool> m_threadExcept = false;
+
 	//signals that the thread finished constructing the renderer
 	std::atomic<bool> m_rendererConstructed = false;
-
-	/* //deprecated non-conditional variable state
-	//signals that the thread finished executing m_fn
-	std::atomic<bool> m_processed = false;
-
-	//signals that the thread must do something else than processing glfw events(processing of events can also be interrupted by a glfw window close event)
-	std::atomic<bool> m_proccessFunction = false;
-	//the function to be proccessed if m_proccessFunction = true and both m_end = false and the window is not closed
-	*/
 	std::function<void()> m_fn;
 	//thread of renderer execution(openGL context lives here)
 	std::thread m_thread;
@@ -66,7 +63,6 @@ public:
 
 	//does renderer sync
 	void executeOnThread(std::function<void()> fn);
-
 
 	RendererTypes getRendererType()const noexcept;
 

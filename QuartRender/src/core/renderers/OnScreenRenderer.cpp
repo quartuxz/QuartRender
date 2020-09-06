@@ -6,7 +6,7 @@
 #include "../../vendor/imgui/imgui_impl_opengl3.h"
 
 
-#include "../InputManager.h"
+#include "../input/InputManager.h"
 
 #include "../utilsGL.h"
 

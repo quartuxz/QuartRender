@@ -11,9 +11,11 @@ void IRenderer::m_clear() const
 
 IRenderer::IRenderer(unsigned int sizex, unsigned int sizey):
 	m_width(sizex),
-	m_height(sizey)
+	m_height(sizey),
+	//TODO: actually implement the projection properly
+	m_drawData(glm::mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), glm::mat4(1.0f))
 {
-	m_vp2D = m_proj2D * m_view;
+
 }
 
 bool IRenderer::windowShouldClose()
@@ -31,7 +33,7 @@ void IRenderer::display()
 	while (!m_drawQueue.empty()) {
 		if (m_drawQueue.front()->setAndPop()) {
 			if (m_drawQueue.front()->getDrawableType() == DrawableTypes::drawable2D) {
-				m_drawQueue.front()->draw(m_vp2D);
+				m_drawQueue.front()->draw(m_drawData);
 			}//TODO: implement 3d drawable drawing
 			else {
 

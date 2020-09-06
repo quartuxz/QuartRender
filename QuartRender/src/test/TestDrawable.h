@@ -26,6 +26,6 @@ public:
 
     DrawableTypes getDrawableType()override;
 
-    void draw(glm::mat4 viewProj)override;
+    void draw(const DrawData& drawData)override;
 };
 

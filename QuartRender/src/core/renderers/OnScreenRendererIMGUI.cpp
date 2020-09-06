@@ -1,15 +1,19 @@
 #include "OnScreenRendererIMGUI.h"
 #include <stdexcept>
 
-#include "../../vendor/imgui/imgui.h"
-#include "../../vendor/imgui/imgui_impl_glfw.h"
-#include "../../vendor/imgui/imgui_impl_opengl3.h"
-
-
-#include "../InputManager.h"
+#include "../input/InputManager.h"
 
 #include "../utilsGL.h"
 
+
+void OnScreenRendererIMGUI::m_startIMGUIFrame()
+{
+
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
 
 OnScreenRendererIMGUI::OnScreenRendererIMGUI(unsigned int sizex, unsigned int sizey):
 	IWindowedRenderer(sizex,sizey)
@@ -17,8 +21,8 @@ OnScreenRendererIMGUI::OnScreenRendererIMGUI(unsigned int sizex, unsigned int si
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    [[maybe_unused]]
-    ImGuiIO& io = ImGui::GetIO();
+    m_io = &ImGui::GetIO();
+
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -31,11 +35,7 @@ OnScreenRendererIMGUI::OnScreenRendererIMGUI(unsigned int sizex, unsigned int si
     ImGui_ImplOpenGL3_Init("#version 460");
 
 
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
+    m_startIMGUIFrame();
 }
 
 void OnScreenRendererIMGUI::display()
@@ -48,13 +48,13 @@ void OnScreenRendererIMGUI::display()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glfwSwapBuffers(m_window);
 
+    InputManager::getInputManagerForThread()->setIMGUIWantsKeyboard(m_io->WantCaptureKeyboard);
 
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+    glfwPollEvents();
 
-    ImGui::ShowDemoWindow();
+    m_startIMGUIFrame();
+    
+
 }
 
 OnScreenRendererIMGUI::~OnScreenRendererIMGUI()

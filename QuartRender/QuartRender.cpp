@@ -8,9 +8,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "src/core/ErrorLog.h"
-#include "src/core/utilsGL.h"
-#include "src/core/renderers/RendererThreadManager.h"
+#include "quartRenderDLLImplUtils.h"
 
 #include "src/core/app.cpp"
 
@@ -18,7 +16,6 @@
 
 #include "src/test/TestDrawableFactory.h"
 #include "src/test/IUniquelyIdentifiableTest.h"
-
 
 static const char* teststr = "hello";
 
@@ -29,26 +26,24 @@ static std::vector<TestDrawable*> testDrawables;
 static TestDrawableFactory fac;
 
 
-#define GET_RENDERER_MULT(rendererHandle) static_cast<RendererThreadManager*>(rendererHandle)
-#define GET_ERROR_LOG(errorLogHandle) static_cast<ErrorLog*>(errorLogHandle)
-
-
-const char* runTests()
+const char* quartRenderFunc(runTests)()
 {
-
     static std::string testThatFailed = "";
-    if (testThatFailed != "") {
-        return "ERROR: runTests called more than once!";
+    if (testThatFailed != ""){
+        testThatFailed = "ERROR: runTests called more than once!";
+        return testThatFailed.c_str();
     }
     testThatFailed = "once";
     if (!runIUniquelyIdentifiableTest(testThatFailed)) {
         return testThatFailed.c_str();
     }
 
-    return "passed";
+    testThatFailed = "passed";
+    return testThatFailed.c_str();
 }
 
-int drawTest(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawableName, float posx, float posy)
+
+int quartRenderFunc(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawableName, float posx, float posy)
 {
     LOG_TO_CONSOLE_COND("draw test called.");
     CATCH_LOG_RETURN_GL(
@@ -60,13 +55,13 @@ int drawTest(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawabl
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int destroyAllDrawTests()
+int quartRenderFunc(destroyAllDrawTests)()
 {
 
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int addTestError(ErrorLogHandle errorLog)
+int quartRenderFunc(addTestError)(ErrorLogHandle errorLog)
 {
     GET_ERROR_LOG(errorLog)->log(std::runtime_error("HELLO MY FRIEND!!:D"));
     return SUCCESS_TERMINATE_CODE_GL;
@@ -74,7 +69,7 @@ int addTestError(ErrorLogHandle errorLog)
 
 
 
-int startTestRenderer(unsigned int sizex, unsigned int sizey)
+int quartRenderFunc(startTestRenderer)(unsigned int sizex, unsigned int sizey)
 {
     try {
         testRenderer = new RendererThreadManager(sizex,sizey,RendererTypes::onscreenRenderer);
@@ -86,7 +81,7 @@ int startTestRenderer(unsigned int sizex, unsigned int sizey)
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int renderImageTest(const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
+int quartRenderFunc(renderImageTest)(const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     try{
         TestDrawable test;
@@ -108,13 +103,13 @@ int renderImageTest(const std::uint8_t** imgbuf, unsigned int* sizex, unsigned i
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int stopTestRenderer()
+int quartRenderFunc(stopTestRenderer)()
 {
     delete testRenderer;
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int testFunc(const char* in)
+int quartRenderFunc(testFunc)(const char* in)
 {
 	int count = 0;
 	while (in[count] != '\0')
@@ -124,18 +119,18 @@ int testFunc(const char* in)
 
 	return count;
 }
-int initQuartRender()
+int quartRenderFunc(initQuartRender)()
 {
 
     return SUCCESS_TERMINATE_CODE_GL;
 }
-ErrorLogHandle createLogger()
+ErrorLogHandle quartRenderFunc(createLogger)()
 {
     return new ErrorLog();
 }
 
 //TODO: invalid argument detection
-RendererHandle createRenderer(ErrorLogHandle errorLog, unsigned int startx, unsigned int starty, unsigned int rendererType)
+RendererHandle quartRenderFunc(createRenderer)(ErrorLogHandle errorLog, unsigned int startx, unsigned int starty, unsigned int rendererType)
 {
     RendererThreadManager* retVal = nullptr;
     try{
@@ -151,14 +146,14 @@ RendererHandle createRenderer(ErrorLogHandle errorLog, unsigned int startx, unsi
     return retVal;
 }
 
-int renderImage(RendererHandle renderer, ErrorLogHandle errorLog)
+int quartRenderFunc(renderImage)(RendererHandle renderer, ErrorLogHandle errorLog)
 {
     LOG_TO_CONSOLE_COND("render image started.");
     CATCH_LOG_RETURN_GL(GET_RENDERER_MULT(renderer)->display(), GET_ERROR_LOG(errorLog));
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int getAndAllowClose(RendererHandle renderer, ErrorLogHandle errorLog, bool* val)
+int quartRenderFunc(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle errorLog, bool* val)
 {
     CATCH_LOG_RETURN_GL(
     *val = GET_RENDERER_MULT(renderer)->getAndAllowClose();,
@@ -167,7 +162,7 @@ int getAndAllowClose(RendererHandle renderer, ErrorLogHandle errorLog, bool* val
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-void getRenderImage(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
+void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     LOG_TO_CONSOLE_COND("getRenderImage called.");
     auto rendererInstance = GET_RENDERER_MULT(renderer);
@@ -178,7 +173,7 @@ void getRenderImage(RendererHandle renderer, const std::uint8_t** imgbuf, unsign
     
 }
 
-void imageTest(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey)
+void quartRenderFunc(imageTest)(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     *sizex = 800;
     *sizey = 800;
@@ -202,12 +197,12 @@ void imageTest(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey)
     }
 }
 
-void windowTest()
+void quartRenderFunc(windowTest)()
 {
     mainNOT();
 }
 
-void testStringFunc(char* out, unsigned int* len)
+void quartRenderFunc(testStringFunc)(char* out, unsigned int* len)
 {
     const char start[] = "testfun";
     if (out == nullptr) {
@@ -218,7 +213,15 @@ void testStringFunc(char* out, unsigned int* len)
     }
 }
 
-void getLogString(ErrorLogHandle errorLog, char* str, unsigned int *len)
+int quartRenderFunc(structPassTest)(testStruct* tstStrc)
+{
+    tstStrc->data16 = 69;
+    tstStrc->data8 = 88;
+    tstStrc->testID = 1;
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+void quartRenderFunc(getLogString)(ErrorLogHandle errorLog, char* str, unsigned int *len)
 {
     std::string logString = GET_ERROR_LOG(errorLog)->getLog();
 
@@ -230,26 +233,35 @@ void getLogString(ErrorLogHandle errorLog, char* str, unsigned int *len)
     }
 }
 
-int destroyRenderer(RendererHandle renderer)
-{
 
+int quartRenderFunc(destroyRenderer)(RendererHandle renderer)
+{
+    //TODO: do factory created drawable instances destruction per renderer
     delete GET_RENDERER_MULT(renderer);
     return SUCCESS_TERMINATE_CODE_GL;
 }
-int destroyLogger(ErrorLogHandle errorLog)
+int quartRenderFunc(destroyLogger)(ErrorLogHandle errorLog)
 {
     delete GET_ERROR_LOG(errorLog);
     return SUCCESS_TERMINATE_CODE_GL;
 }
-int exitQuartRender()
+int quartRenderFunc(exitQuartRender)()
 {
     glfwTerminate();
     InputManager::destroyAllInputManagers();
     return SUCCESS_TERMINATE_CODE_GL;
 }
-void getGLVersion(char*)
+void quartRenderFunc(getGLVersion)(char*)
 {
 	glGetString(GL_VERSION);
 }
+
+int quartRenderFunc(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput* keyboardInput)
+{
+    CATCH_LOG_RETURN_GL(*keyboardInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestInput();,
+        GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
 
 

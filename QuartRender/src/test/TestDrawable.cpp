@@ -46,11 +46,11 @@ DrawableTypes TestDrawable::getDrawableType()
     return DrawableTypes::drawable2D;
 }
 
-void TestDrawable::draw(glm::mat4 viewProj)
+void TestDrawable::draw(const DrawData& drawData)
 {
     LOG_TO_CONSOLE_COND("draw started.");
 
-    glm::mat4 mvp = viewProj * m_modelTransform;
+    glm::mat4 mvp = drawData.getViewProj2D() * m_modelTransform;
 
     LOG_TO_CONSOLE_COND("mvp calculated.");
     u_color->setUniform(0.5f, 0.5f, 0.7f, 1.0f);

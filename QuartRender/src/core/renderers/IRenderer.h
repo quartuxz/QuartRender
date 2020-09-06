@@ -7,6 +7,8 @@
 #include "GL/glew.h"
 #include <GLFW/glfw3.h>
 
+
+#include "../drawables/DrawDataStructs.h"
 #include "../generic utils/IUniquelyIdentifiable.h"
 #include "../Drawables/IDrawable.h"
 
@@ -14,16 +16,14 @@ enum class RendererTypes:unsigned int {
 	onscreenRenderer, onscreenRendererIMGUI, offscreenRenderer, ENUM_MAX
 };
 
+//TODO: add camara(zoom, pan etc) and reconfigurable viewport capabilities to calculate the vp matrices
 class IRenderer
 {
 protected:
 	GLFWwindow* m_window;
 	std::queue<IDrawable*> m_drawQueue;
 
-	glm::mat4 m_proj2D = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-	glm::mat4 m_view = glm::mat4(1.0f);
-
-	glm::mat4 m_vp2D;
+	DrawData m_drawData;
 
 
 	unsigned int m_width, m_height;

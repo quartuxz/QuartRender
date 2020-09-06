@@ -1,7 +1,7 @@
 #include "IWindowedRenderer.h"
 #include <stdexcept>
 
-#include "../InputManager.h"
+#include "../input/InputManager.h"
 
 #include "../utilsGL.h"
 
@@ -60,6 +60,7 @@ void IWindowedRenderer::display()
     THROW_ERRORS_GL_FAST(glViewport(0, 0, newvsx, newvsy));
     IRenderer::display();
     glfwSwapBuffers(m_window);
+    glfwPollEvents();
 }
 
 IWindowedRenderer::~IWindowedRenderer()

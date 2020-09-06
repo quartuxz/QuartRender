@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include "src/core/input/inputStructs.h"
+
 
 #ifdef QUARTRENDER_EXPORTS
 #define QUARTRENDER_API __declspec(dllexport)
@@ -7,56 +9,73 @@
 #define QUARTRENDER_API __declspec(dllimport)
 #endif
 
+
+#define quartRenderFunc(name) quartRender_##name
+#define IMGUIFunc(name) IMGUI_##name
+
 typedef void* ErrorLogHandle;
 typedef void* RendererHandle;
+
+
+
+struct testStruct {
+	int testID;
+	std::uint16_t data16;
+	std::uint8_t data8;
+};
 
 extern "C" {
 
 	//creation
-	QUARTRENDER_API int initQuartRender();
-	QUARTRENDER_API ErrorLogHandle createLogger();
-	QUARTRENDER_API RendererHandle createRenderer(ErrorLogHandle errorLog, unsigned int startx, unsigned int starty, unsigned int rendererType);
+	QUARTRENDER_API int quartRenderFunc(initQuartRender)();
+	QUARTRENDER_API ErrorLogHandle quartRenderFunc(createLogger)();
+	QUARTRENDER_API RendererHandle quartRenderFunc(createRenderer)(ErrorLogHandle errorLog, unsigned int startx, unsigned int starty, unsigned int rendererType);
 
 	//usage
-	QUARTRENDER_API int renderImage(RendererHandle renderer, ErrorLogHandle errorLog);
-	QUARTRENDER_API int getAndAllowClose(RendererHandle renderer, ErrorLogHandle errorLog, bool *val);
+	QUARTRENDER_API int quartRenderFunc(renderImage)(RendererHandle renderer, ErrorLogHandle errorLog);
+	QUARTRENDER_API int quartRenderFunc(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle errorLog, bool *val);
 
 		//deprecated
-	QUARTRENDER_API void getRenderImage(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey);
+	QUARTRENDER_API void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey);
 
 	//TODO: implement this
-	QUARTRENDER_API void getLogString(ErrorLogHandle errorLog, char* str, unsigned int *len);
+	QUARTRENDER_API void quartRenderFunc(getLogString)(ErrorLogHandle errorLog, char* str, unsigned int *len);
 
 	//destruction
-	QUARTRENDER_API int destroyRenderer(RendererHandle renderer);
-	QUARTRENDER_API int destroyLogger(ErrorLogHandle errorLog);
+	QUARTRENDER_API int quartRenderFunc(destroyRenderer)(RendererHandle renderer);
+	QUARTRENDER_API int quartRenderFunc(destroyLogger)(ErrorLogHandle errorLog);
 		//call this when the application stops using quartRender
-	QUARTRENDER_API int exitQuartRender();
-
+	QUARTRENDER_API int quartRenderFunc(exitQuartRender)();
 
 	//util
-	QUARTRENDER_API void getGLVersion(char*);
+	QUARTRENDER_API void quartRenderFunc(getGLVersion)(char*);
+	
+	//input
+	QUARTRENDER_API int quartRenderFunc(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput *keyboardInput);
 
+	//IMGUI
+	QUARTRENDER_API int IMGUIFunc(showDemoWindow)(RendererHandle renderer, ErrorLogHandle errorLog);
 
 
 	//tests (USE std::cout/clog/cerr but only for testing) never use these functions in final product
 		//run after initQuartRender but before anything else
-	QUARTRENDER_API const char* runTests();
-
-		//drawTest, testDrawableName does nothing, it is meant to show the true form of a function like this one, where the name of a 
+	QUARTRENDER_API const char* quartRenderFunc(runTests)();
+		//
+	QUARTRENDER_API int quartRenderFunc(structPassTest)(testStruct *tstStrc);
+		//drawTest, testDrawableName does nothing!, it is meant to show the true form of a function like this one, where the name of a 
 		//registered drawable is passed in to specify the form of the IDrawable(i.e "earth" displays a sphere/circle with earth-like visuals, as long as "earth" is registered and described)
-	QUARTRENDER_API int drawTest(RendererHandle renderer, ErrorLogHandle errorLog,char *testDrawableName, float posx, float posy);
-	QUARTRENDER_API int destroyAllDrawTests();
+	QUARTRENDER_API int quartRenderFunc(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog,char *testDrawableName, float posx, float posy);
+	QUARTRENDER_API int quartRenderFunc(destroyAllDrawTests)();
 
-	QUARTRENDER_API int addTestError(ErrorLogHandle errorLog);
+	QUARTRENDER_API int quartRenderFunc(addTestError)(ErrorLogHandle errorLog);
 
-	QUARTRENDER_API int startTestRenderer(unsigned int sizex, unsigned int sizey);
-	QUARTRENDER_API int renderImageTest(const std::uint8_t**imgbuf, unsigned int* sizex, unsigned int* sizey);
-	QUARTRENDER_API int stopTestRenderer();
+	QUARTRENDER_API int quartRenderFunc(startTestRenderer)(unsigned int sizex, unsigned int sizey);
+	QUARTRENDER_API int quartRenderFunc(renderImageTest)(const std::uint8_t**imgbuf, unsigned int* sizex, unsigned int* sizey);
+	QUARTRENDER_API int quartRenderFunc(stopTestRenderer)();
 
-	QUARTRENDER_API void testStringFunc(char* out, unsigned int *len);
+	QUARTRENDER_API void quartRenderFunc(testStringFunc)(char* out, unsigned int *len);
 
-	QUARTRENDER_API int testFunc(const char*);
-	QUARTRENDER_API void imageTest(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey);
-	QUARTRENDER_API void windowTest();
+	QUARTRENDER_API int quartRenderFunc(testFunc)(const char*);
+	QUARTRENDER_API void quartRenderFunc(imageTest)(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey);
+	QUARTRENDER_API void quartRenderFunc(windowTest)();
 }

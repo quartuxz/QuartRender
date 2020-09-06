@@ -165,12 +165,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="quartRenderDLLImplUtils.h" />
+    <ClInclude Include="src\core\drawables\DrawDataStructs.h" />
     <ClInclude Include="src\core\drawables\factories\IDrawableFactory.h" />
     <ClInclude Include="src\core\drawables\IVariableDrawable.h" />
+    <ClInclude Include="src\core\input\inputStructs.h" />
     <ClInclude Include="src\core\renderers\IWindowedRenderer.h" />
     <ClInclude Include="src\core\renderers\OnScreenRendererIMGUI.h" />
     <ClInclude Include="src\core\generic utils\IUniquelyIdentifiable.h" />
-    <ClInclude Include="src\core\InputManager.h" />
+    <ClInclude Include="src\core\input\InputManager.h" />
     <ClInclude Include="src\core\renderers\IRenderer.h" />
     <ClInclude Include="src\core\renderers\OnScreenRenderer.h" />
     <ClInclude Include="src\core\renderers\RendererThreadManager.h" />
@@ -200,12 +203,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="IMGUI_quartRender_bind.cpp" />
     <ClCompile Include="src\core\drawables\factories\IDrawableFactory.cpp" />
     <ClCompile Include="src\core\drawables\IVariableDrawable.cpp" />
     <ClCompile Include="src\core\renderers\IWindowedRenderer.cpp" />
     <ClCompile Include="src\core\renderers\OnScreenRendererIMGUI.cpp" />
     <ClCompile Include="src\core\generic utils\IUniquelyIdentifiable.cpp" />
-    <ClCompile Include="src\core\InputManager.cpp" />
+    <ClCompile Include="src\core\input\InputManager.cpp" />
     <ClCompile Include="src\core\renderers\IRenderer.cpp" />
     <ClCompile Include="src\core\renderers\OnScreenRenderer.cpp" />
     <ClCompile Include="src\core\renderers\RendererThreadManager.cpp" />
