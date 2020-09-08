@@ -11,17 +11,21 @@ static std::vector<InputManager*> unregisteredInputManagers;
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	THIS_IMANAGER->m_scrollInputInstances.push(ScrollInput{xoffset,yoffset,THIS_IMANAGER->m_currentCursorPosition,true});
+	CursorPosition currentCursorPos = THIS_IMANAGER->m_currentCursorPosition;
+	currentCursorPos.capturedByIMGUI = THIS_IMANAGER->m_IMGUIWantsMouse;
+	THIS_IMANAGER->m_scrollInputInstances.push(ScrollInput{xoffset,yoffset,currentCursorPos,true});
 }
 
 void mouseButton_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	THIS_IMANAGER->m_mouseButtonInputInstances.push(MouseButtonInput{ button,action,mods,THIS_IMANAGER->m_currentCursorPosition,true});
+	CursorPosition currentCursorPos = THIS_IMANAGER->m_currentCursorPosition;
+	currentCursorPos.capturedByIMGUI = THIS_IMANAGER->m_IMGUIWantsMouse;
+	THIS_IMANAGER->m_mouseButtonInputInstances.push(MouseButtonInput{ button,action,mods,currentCursorPos,true});
 }
 
 void cursorPosition_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	THIS_IMANAGER->m_currentCursorPosition = CursorPosition{xpos, ypos};
+	THIS_IMANAGER->m_currentCursorPosition = CursorPosition{xpos, ypos, THIS_IMANAGER->m_IMGUIWantsMouse};
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -65,6 +69,11 @@ InputManager* InputManager::getInputManagerForThread()
 void InputManager::m_setIMGUIWantsKeyboard(bool value)
 {
 	m_IMGUIWantsKeyboard = value;
+}
+
+void InputManager::m_setIMGUIWantsMouse(bool value)
+{
+	m_IMGUIWantsMouse = value;
 }
 
 

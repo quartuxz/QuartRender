@@ -20,9 +20,13 @@ friend class OnScreenRendererIMGUI;
 private:
 	//tells the input manager that all following key events are used by IMGUI
 	void m_setIMGUIWantsKeyboard(bool value);
+	//tells the input manager that all following mouse events are used by IMGUI
+	void m_setIMGUIWantsMouse(bool value);
 
 	InputManager()noexcept;
 	std::atomic<bool> m_isValid;
+
+	bool m_IMGUIWantsMouse = false;
 	bool m_IMGUIWantsKeyboard = false;
 	
 	std::queue<KeyboardInput> m_keyInputInstances;

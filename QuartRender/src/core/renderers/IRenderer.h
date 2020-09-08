@@ -26,6 +26,8 @@ protected:
 	DrawData m_drawData;
 
 
+	static bool m_glfwIsInit;
+
 	unsigned int m_width, m_height;
 
 	virtual void m_clear()const;

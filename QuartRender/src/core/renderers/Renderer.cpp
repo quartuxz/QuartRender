@@ -5,9 +5,6 @@
 Renderer::Renderer(unsigned int width, unsigned int height):
     IRenderer(width, height)
 {
-    if (!glfwInit())
-        throw std::runtime_error("failed to initialize glfw!");
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

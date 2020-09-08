@@ -8,10 +8,6 @@
 IWindowedRenderer::IWindowedRenderer(unsigned int sizex, unsigned int sizey):
 	IRenderer(sizex,sizey)
 {
-    glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
-        throw std::runtime_error("failed to initialize glfw!");
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -25,6 +21,9 @@ IWindowedRenderer::IWindowedRenderer(unsigned int sizex, unsigned int sizey):
     }
 
     glfwSetKeyCallback(m_window, key_callback);
+    glfwSetMouseButtonCallback(m_window, mouseButton_callback);
+    glfwSetScrollCallback(m_window, scroll_callback);
+    glfwSetCursorPosCallback(m_window, cursorPosition_callback);
 
     /* Make the window's context current */
     glfwMakeContextCurrent(m_window);

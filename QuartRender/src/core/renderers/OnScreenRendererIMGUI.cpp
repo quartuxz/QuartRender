@@ -49,6 +49,7 @@ void OnScreenRendererIMGUI::display()
     glfwSwapBuffers(m_window);
 
     InputManager::getInputManagerForThread()->m_setIMGUIWantsKeyboard(m_io->WantCaptureKeyboard);
+    InputManager::getInputManagerForThread()->m_setIMGUIWantsMouse(m_io->WantCaptureMouse);
 
     glfwPollEvents();
 

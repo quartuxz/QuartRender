@@ -2,6 +2,8 @@
 #include "../utilsGL.h"
 
 
+bool IRenderer::m_glfwIsInit = false;
+
 //TODO: consider moving the viewport resize capabilities here
 
 void IRenderer::m_clear() const
@@ -15,7 +17,12 @@ IRenderer::IRenderer(unsigned int sizex, unsigned int sizey):
 	//TODO: actually implement the projection properly
 	m_drawData(glm::mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), glm::mat4(1.0f))
 {
-
+	if (!m_glfwIsInit) {
+		glfwSetErrorCallback(glfw_error_callback);
+		if (!glfwInit())
+			throw std::runtime_error("failed to initialize glfw!");
+		m_glfwIsInit = true;
+	}
 }
 
 bool IRenderer::windowShouldClose()

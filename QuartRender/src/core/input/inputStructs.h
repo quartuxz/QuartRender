@@ -1,12 +1,12 @@
 #pragma once
 
-
+//todo: add flags for custom own GUI for when IT captures the mouse and keyboard(as opposed to imgui)
 struct KeyboardInput {
 	int key;
 	int scancode;
 	int action;
 	int mods;
-	bool captureByIMGUI;
+	bool capturedByIMGUI;
 	bool isValid;
 
 };
@@ -15,6 +15,7 @@ struct KeyboardInput {
 struct CursorPosition {
 	double xpos;
 	double ypos;
+	bool capturedByIMGUI;
 };
 
 
