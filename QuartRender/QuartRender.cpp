@@ -258,7 +258,28 @@ void quartRenderFunc(getGLVersion)(char*)
 
 int quartRenderFunc(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput* keyboardInput)
 {
-    CATCH_LOG_RETURN_GL(*keyboardInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestInput();,
+    CATCH_LOG_RETURN_GL(*keyboardInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestKeyboardInput();,
+        GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+int quartRenderFunc(getAndPopLastMouseButtonInput)(RendererHandle renderer, ErrorLogHandle errorLog, MouseButtonInput* mouseButtonInput)
+{
+    CATCH_LOG_RETURN_GL(*mouseButtonInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestMouseButtonInput();,
+        GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+int quartRenderFunc(getAndPopLastScrollInput)(RendererHandle renderer, ErrorLogHandle errorLog, ScrollInput* scrollInput)
+{
+    CATCH_LOG_RETURN_GL(*scrollInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestScrollInput();,
+        GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+int quartRenderFunc(getCurrentCursorPosition)(RendererHandle renderer, ErrorLogHandle errorLog, CursorPosition* cursorPosition)
+{
+    CATCH_LOG_RETURN_GL(*cursorPosition = GET_RENDERER_MULT(renderer)->getInputManager()->getCurrentCursorPosition();,
         GET_ERROR_LOG(errorLog))
     return SUCCESS_TERMINATE_CODE_GL;
 }

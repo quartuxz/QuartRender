@@ -48,7 +48,7 @@ void OnScreenRendererIMGUI::display()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glfwSwapBuffers(m_window);
 
-    InputManager::getInputManagerForThread()->setIMGUIWantsKeyboard(m_io->WantCaptureKeyboard);
+    InputManager::getInputManagerForThread()->m_setIMGUIWantsKeyboard(m_io->WantCaptureKeyboard);
 
     glfwPollEvents();
 

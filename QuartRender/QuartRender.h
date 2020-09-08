@@ -52,6 +52,9 @@ extern "C" {
 	
 	//input
 	QUARTRENDER_API int quartRenderFunc(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput *keyboardInput);
+	QUARTRENDER_API int quartRenderFunc(getAndPopLastMouseButtonInput)(RendererHandle renderer, ErrorLogHandle errorLog, MouseButtonInput *mouseButtonInput);
+	QUARTRENDER_API int quartRenderFunc(getAndPopLastScrollInput)(RendererHandle renderer, ErrorLogHandle errorLog, ScrollInput* scrollInput);
+	QUARTRENDER_API int quartRenderFunc(getCurrentCursorPosition)(RendererHandle renderer, ErrorLogHandle errorLog, CursorPosition *cursorPosition);
 
 	//IMGUI
 	QUARTRENDER_API int IMGUIFunc(showDemoWindow)(RendererHandle renderer, ErrorLogHandle errorLog);

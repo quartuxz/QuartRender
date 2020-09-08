@@ -9,6 +9,21 @@ static std::vector<InputManager*> unregisteredInputManagers;
 
 #define THIS_IMANAGER inputManagers[std::this_thread::get_id()]
 
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	THIS_IMANAGER->m_scrollInputInstances.push(ScrollInput{xoffset,yoffset,THIS_IMANAGER->m_currentCursorPosition,true});
+}
+
+void mouseButton_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	THIS_IMANAGER->m_mouseButtonInputInstances.push(MouseButtonInput{ button,action,mods,THIS_IMANAGER->m_currentCursorPosition,true});
+}
+
+void cursorPosition_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	THIS_IMANAGER->m_currentCursorPosition = CursorPosition{xpos, ypos};
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	THIS_IMANAGER->m_keyInputInstances.push(KeyboardInput{key,scancode,action,mods, THIS_IMANAGER->m_IMGUIWantsKeyboard, true});
@@ -47,13 +62,13 @@ InputManager* InputManager::getInputManagerForThread()
 	return THIS_IMANAGER;
 }
 
-void InputManager::setIMGUIWantsKeyboard(bool value)
+void InputManager::m_setIMGUIWantsKeyboard(bool value)
 {
 	m_IMGUIWantsKeyboard = value;
 }
 
 
-KeyboardInput InputManager::getAndPopOldestInput()noexcept
+KeyboardInput InputManager::getAndPopOldestKeyboardInput()noexcept
 {
 	KeyboardInput retval;
 	if (m_keyInputInstances.empty()) {
@@ -64,6 +79,38 @@ KeyboardInput InputManager::getAndPopOldestInput()noexcept
 		m_keyInputInstances.pop();
 	}
 
+	return retval;
+}
+
+MouseButtonInput InputManager::getAndPopOldestMouseButtonInput() noexcept
+{
+
+	MouseButtonInput retval;
+	if (m_mouseButtonInputInstances.empty()) {
+		retval.isValid = false;
+	}
+	else {
+		retval = m_mouseButtonInputInstances.front();
+		m_mouseButtonInputInstances.pop();
+	}
+	return retval;
+}
+
+CursorPosition InputManager::getCurrentCursorPosition()const noexcept
+{
+	return m_currentCursorPosition;
+}
+
+ScrollInput InputManager::getAndPopOldestScrollInput() noexcept
+{
+	ScrollInput retval;
+	if (m_scrollInputInstances.empty()) {
+		retval.isValid = false;
+	}
+	else {
+		retval = m_scrollInputInstances.front();
+		m_scrollInputInstances.pop();
+	}
 	return retval;
 }
 
