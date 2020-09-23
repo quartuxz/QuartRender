@@ -120,6 +120,9 @@
     <ClInclude Include="src\core\drawables\DrawDataStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="imgui_binding\IMGUI_c_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -206,10 +209,10 @@
     <ClCompile Include="src\core\drawables\factories\IDrawableFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IMGUI_quartRender_bind.cpp">
+    <ClCompile Include="src\core\input\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\input\InputManager.cpp">
+    <ClCompile Include="imgui_binding\IMGUI_quartRender_bind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -223,5 +226,8 @@
     <None Include="render_res\shaders\testVert.glsl" />
     <None Include="render_res\shaders\flatTestVert.glsl" />
     <None Include="render_res\shaders\flatTestFrag.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="IMGUI_LICENSE.txt" />
   </ItemGroup>
 </Project>
