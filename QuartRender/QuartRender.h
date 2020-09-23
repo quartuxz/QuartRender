@@ -3,8 +3,6 @@
 #include "src/vendor/imgui/imgui.h"
 #include "src/core/input/inputStructs.h"
 
-#include "imgui_binding/IMGUI_c_structs.h"
-
 
 #ifdef QUARTRENDER_EXPORTS
 #define QUARTRENDER_API __declspec(dllexport)
@@ -14,7 +12,6 @@
 
 
 #define quartRenderFunc(name) quartRender_##name
-#define IMGUIFunc(name) IMGUI_##name
 
 typedef void* ErrorLogHandle;
 typedef void* RendererHandle;
@@ -59,17 +56,7 @@ extern "C" {
 	QUARTRENDER_API int quartRenderFunc(getAndPopLastScrollInput)(RendererHandle renderer, ErrorLogHandle errorLog, ScrollInput* scrollInput);
 	QUARTRENDER_API int quartRenderFunc(getCurrentCursorPosition)(RendererHandle renderer, ErrorLogHandle errorLog, CursorPosition *cursorPosition);
 
-
-	//IMGUI
-	QUARTRENDER_API int IMGUIFunc(ShowDemoWindow)(RendererHandle renderer, ErrorLogHandle errorLog);
-	QUARTRENDER_API int IMGUIFunc(Begin)(RendererHandle renderer, ErrorLogHandle errorLog,const char *name, bool*p_open, ImGuiWindowFlags flags, bool *retval);
-	QUARTRENDER_API int IMGUIFunc(End)(RendererHandle renderer, ErrorLogHandle errorLog);
-
-	QUARTRENDER_API int IMGUIFunc(BeginChild_byName)(RendererHandle renderer, ErrorLogHandle errorLog)
-
-
-
-	//tests (USE std::cout/clog/cerr but only for testing) never use these functions in final product
+	//tests (THEY USE std::cout/clog/cerr but only for testing) never use these functions in final product
 		//run after initQuartRender but before anything else
 	QUARTRENDER_API const char* quartRenderFunc(runTests)();
 		//

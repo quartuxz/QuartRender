@@ -165,7 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="imgui_binding\IMGUI_c_structs.h" />
+    <ClInclude Include="cimgui\cimgui.h" />
     <ClInclude Include="quartRenderDLLImplUtils.h" />
     <ClInclude Include="src\core\drawables\DrawDataStructs.h" />
     <ClInclude Include="src\core\drawables\factories\IDrawableFactory.h" />
@@ -204,7 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="imgui_binding\IMGUI_quartRender_bind.cpp" />
+    <ClCompile Include="cimgui\cimgui.cpp" />
     <ClCompile Include="src\core\drawables\factories\IDrawableFactory.cpp" />
     <ClCompile Include="src\core\drawables\IVariableDrawable.cpp" />
     <ClCompile Include="src\core\renderers\IWindowedRenderer.cpp" />
@@ -244,7 +244,10 @@
     <None Include="render_res\shaders\testVert.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="cimgui\LICENSE.txt" />
+    <Text Include="CIMGUI_LICENSE.txt" />
     <Text Include="IMGUI_LICENSE.txt" />
+    <Text Include="src\vendor\imgui\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
