@@ -83,7 +83,7 @@ public:
 	~ShaderProgram();
 };
 
-//SPECIALIZATIONS HERE:
+//UniformGL SPECIALIZATIONS HERE:
 
 template<>
 class UniformGL<UniformTypes::FLOAT_4> :public IUniformGL {

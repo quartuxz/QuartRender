@@ -31,17 +31,12 @@ TestDrawable::TestDrawable() :
     u_MVP = program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
 }
 
-void TestDrawable::addVariation(const glm::mat4& modelTrans)
-{
-    m_modelTransformQueue.push(modelTrans);
-}
-
 bool TestDrawable::setAndPop()
 {
     return IDrawable::setAndPop();
 }
 
-DrawableTypes TestDrawable::getDrawableType()
+DrawableTypes TestDrawable::getDrawableType()const noexcept
 {
     return DrawableTypes::drawable2D;
 }
@@ -50,7 +45,7 @@ void TestDrawable::draw(const DrawData& drawData)
 {
     LOG_TO_CONSOLE_COND("draw started.");
 
-    glm::mat4 mvp = drawData.getViewProj2D() * m_modelTransform;
+    glm::mat4 mvp = drawData.getViewProj2D() * m_drawVariation.modelTransform;
 
     LOG_TO_CONSOLE_COND("mvp calculated.");
     u_color->setUniform(0.5f, 0.5f, 0.7f, 1.0f);

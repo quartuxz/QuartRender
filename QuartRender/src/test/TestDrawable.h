@@ -4,11 +4,10 @@
 #include "../core/IndexBuffer.h"
 #include "../core/ShaderProgram.h"
 
-#include "../core/drawables/IVariableDrawable.h"
+#include "../core/drawables/IDrawable.h"
 
 class TestDrawable final :
-    public IDrawable,
-    public IVariableDrawable<glm::mat4>
+    public IDrawable
 {
 private:
     VertexArray vertexArray;
@@ -20,11 +19,9 @@ private:
     UniformGL<UniformTypes::FLOAT_MAT_4x4>* u_MVP;
 public:
     TestDrawable();
-
-    void addVariation(const glm::mat4& modelTrans)override;
     bool setAndPop()override;
 
-    DrawableTypes getDrawableType()override;
+    DrawableTypes getDrawableType()const noexcept override;
 
     void draw(const DrawData& drawData)override;
 };

@@ -51,15 +51,15 @@ VertexArray::~VertexArray()
 void BufferLayoutElement::m_bindLayout(GLsizei stride)const
 {
 
-	THROW_ERRORS_GL(glVertexAttribPointer(m_attributeIndex, m_numberOfElements, m_type, m_isNormalized, stride, (GLvoid*)(m_attributeOffset)));
+	THROW_ERRORS_GL(glVertexAttribPointer(m_attributeIndex, m_numberOfElements, m_type, m_shouldNormalize, stride, (GLvoid*)(m_attributeOffset)));
 	THROW_ERRORS_GL(glEnableVertexAttribArray(m_attributeIndex));
 }
 
 
-BufferLayoutElement::BufferLayoutElement(GLuint numberOfElements, GLenum type, GLboolean isNormalized)noexcept:
+BufferLayoutElement::BufferLayoutElement(GLuint numberOfElements, GLenum type, GLboolean shouldNormalize)noexcept:
 	m_numberOfElements(numberOfElements),
 	m_type(type),
-	m_isNormalized(isNormalized),
+	m_shouldNormalize(shouldNormalize),
 	m_sizeInBytes(getSizeOfGLType(type)*numberOfElements)
 {
 }

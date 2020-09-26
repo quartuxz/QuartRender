@@ -17,111 +17,22 @@
 #include "src/test/TestDrawableFactory.h"
 #include "src/test/IUniquelyIdentifiableTest.h"
 
-static const char* teststr = "hello";
+#include "src/core/drawables/DrawableFactoryManager.h"
 
-static RendererThreadManager *testRenderer = nullptr;
-
-static std::vector<TestDrawable*> testDrawables;
-
-static TestDrawableFactory fac;
+#include "src/core/drawables/factories/PlanetDrawableFactory.h"
 
 
-const char* quartRenderFunc(runTests)()
-{
-    static std::string testThatFailed = "";
-    if (testThatFailed != ""){
-        testThatFailed = "ERROR: runTests called more than once!";
-        return testThatFailed.c_str();
-    }
-    testThatFailed = "once";
-    if (!runIUniquelyIdentifiableTest(testThatFailed)) {
-        return testThatFailed.c_str();
-    }
+static DrawableFactoryManager *theDrawableFactoryManager;
 
-    testThatFailed = "passed";
-    return testThatFailed.c_str();
-}
-
-
-int quartRenderFunc(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawableName, float posx, float posy)
-{
-    LOG_TO_CONSOLE_COND("draw test called.");
-    CATCH_LOG_RETURN_GL(
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(posx,posy,0.0f));
-        fac.addDrawableToRenderer(GET_RENDERER_MULT(renderer), transform);
-         ,
-    GET_ERROR_LOG(errorLog)
-    );
-    return SUCCESS_TERMINATE_CODE_GL;
-}
-
-int quartRenderFunc(destroyAllDrawTests)()
-{
-
-    return SUCCESS_TERMINATE_CODE_GL;
-}
-
-int quartRenderFunc(addTestError)(ErrorLogHandle errorLog)
-{
-    GET_ERROR_LOG(errorLog)->log(std::runtime_error("HELLO MY FRIEND!!:D"));
-    return SUCCESS_TERMINATE_CODE_GL;
-}
-
-
-
-int quartRenderFunc(startTestRenderer)(unsigned int sizex, unsigned int sizey)
-{
-    try {
-        testRenderer = new RendererThreadManager(sizex,sizey,RendererTypes::onscreenRenderer);
-    }
-    catch (const std::exception&e) {
-        std::cerr << e.what() << std::endl;
-        return ERROR_TERMINATE_CODE_GL;
-    }
-    return SUCCESS_TERMINATE_CODE_GL;
-}
-
-int quartRenderFunc(renderImageTest)(const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
-{
-    try{
-        TestDrawable test;
-        LOG_TO_CONSOLE("testDrawable created");
-        testRenderer->addDrawable(&test);
-        LOG_TO_CONSOLE("testDrawable added");
-        testRenderer->display();
-        LOG_TO_CONSOLE("image rendered to buffer");
-        auto retval = testRenderer->getImageBuffer();
-        LOG_TO_CONSOLE("image gotten");
-        *sizex = testRenderer->getViewportWidth();
-        *sizey = testRenderer->getViewportHeight();
-        *imgbuf = retval->data();
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return ERROR_TERMINATE_CODE_GL;
-    }
-    return SUCCESS_TERMINATE_CODE_GL;
-}
-
-int quartRenderFunc(stopTestRenderer)()
-{
-    delete testRenderer;
-    return SUCCESS_TERMINATE_CODE_GL;
-}
-
-int quartRenderFunc(testFunc)(const char* in)
-{
-	int count = 0;
-	while (in[count] != '\0')
-	{
-		count++;
-	}
-
-	return count;
-}
 int quartRenderFunc(initQuartRender)()
 {
-
+    try {
+        theDrawableFactoryManager = new DrawableFactoryManager();
+    }
+    catch (...) {
+        return ERROR_TERMINATE_CODE_GL;
+    }
+   
     return SUCCESS_TERMINATE_CODE_GL;
 }
 ErrorLogHandle quartRenderFunc(createLogger)()
@@ -149,7 +60,7 @@ RendererHandle quartRenderFunc(createRenderer)(ErrorLogHandle errorLog, unsigned
 int quartRenderFunc(renderImage)(RendererHandle renderer, ErrorLogHandle errorLog)
 {
     LOG_TO_CONSOLE_COND("render image started.");
-    CATCH_LOG_RETURN_GL(GET_RENDERER_MULT(renderer)->display(), GET_ERROR_LOG(errorLog));
+    CATCH_LOG_RETURN_GL(theDrawableFactoryManager->endFrame(); GET_RENDERER_MULT(renderer)->display();, GET_ERROR_LOG(errorLog));
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
@@ -162,6 +73,28 @@ int quartRenderFunc(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle er
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
+QUARTRENDER_API int quartRenderFunc(createPlanet)(ErrorLogHandle errorLog, const char* planetClassName, PlanetCharacteristics planetCharacteristics)
+{
+    CATCH_LOG_RETURN_GL(
+    PlanetDrawableFactory* planetFac = new PlanetDrawableFactory(planetCharacteristics);
+
+    theDrawableFactoryManager->addClickableDrawableFactory(planetClassName, planetFac);
+    , GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+int quartRenderFunc(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog, const char* planetClassName, const char* planetName, double posx, double posy)
+{
+    CATCH_LOG_RETURN_GL(
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(posx, posy, 0.0f));
+    //we set the union to use the model transform part
+    DrawVariation variation;
+    variation.modelTransform = transform;
+    theDrawableFactoryManager->draw(GET_RENDERER_MULT(renderer), planetClassName, planetName, variation);
+    , GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
 void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     LOG_TO_CONSOLE_COND("getRenderImage called.");
@@ -171,54 +104,6 @@ void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t
     *sizey = rendererInstance->getViewportHeight();
     *imgbuf = temp->data();
     
-}
-
-void quartRenderFunc(imageTest)(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey)
-{
-    *sizex = 800;
-    *sizey = 800;
-    *imgbuf = new unsigned char[(*sizex)*(*sizey)*4];
-    for (size_t i = 0; i < (*sizex) * (*sizey) * 4; i+=4)
-    {
-        for (size_t o = 0; o < 4; o++)
-        {
-            if (o == 3) {
-                (*imgbuf)[i + o] = 255;
-            }
-            else if(o==0) {
-                (*imgbuf)[i + o] = 50;
-            }
-            else {
-                (*imgbuf)[i + o] = 255;
-            }
-            
-        }
-
-    }
-}
-
-void quartRenderFunc(windowTest)()
-{
-    mainNOT();
-}
-
-void quartRenderFunc(testStringFunc)(char* out, unsigned int* len)
-{
-    const char start[] = "testfun";
-    if (out == nullptr) {
-        *len = strlen(start) + 1;
-    }
-    else {
-        strcpy_s(out, *len, start);
-    }
-}
-
-int quartRenderFunc(structPassTest)(testStruct* tstStrc)
-{
-    tstStrc->data16 = 69;
-    tstStrc->data8 = 88;
-    tstStrc->testID = 1;
-    return SUCCESS_TERMINATE_CODE_GL;
 }
 
 void quartRenderFunc(getLogString)(ErrorLogHandle errorLog, char* str, unsigned int *len)
@@ -236,7 +121,7 @@ void quartRenderFunc(getLogString)(ErrorLogHandle errorLog, char* str, unsigned 
 
 int quartRenderFunc(destroyRenderer)(RendererHandle renderer)
 {
-    //TODO: do factory created drawable instances destruction per renderer
+    theDrawableFactoryManager->destroyDrawablesForRenderer(GET_RENDERER_MULT(renderer));
     delete GET_RENDERER_MULT(renderer);
     return SUCCESS_TERMINATE_CODE_GL;
 }
@@ -247,6 +132,7 @@ int quartRenderFunc(destroyLogger)(ErrorLogHandle errorLog)
 }
 int quartRenderFunc(exitQuartRender)()
 {
+    delete theDrawableFactoryManager;
     glfwTerminate();
     InputManager::destroyAllInputManagers();
     return SUCCESS_TERMINATE_CODE_GL;

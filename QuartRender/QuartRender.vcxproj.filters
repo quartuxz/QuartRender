@@ -75,9 +75,6 @@
     <ClInclude Include="src\test\TestDrawableFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\drawables\IVariableDrawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\drawables\factories\IDrawableFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -121,6 +118,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cimgui\cimgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\drawables\DrawableFactoryManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\drawables\drawable classes\PlanetDrawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\drawables\factories\PlanetDrawableFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\input\IClickableDrawableManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\drawables\factories\IClickableDrawableFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\drawables\DrawableVariationUnion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -185,9 +200,6 @@
     <ClCompile Include="src\test\TestDrawableFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\drawables\IVariableDrawable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\drawables\factories\IDrawableFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -213,6 +225,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cimgui\cimgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuartRender_testImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\drawables\DrawableFactoryManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\drawables\drawable classes\PlanetDrawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\drawables\factories\PlanetDrawableFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\input\IClickableDrawableManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\drawables\factories\IClickableDrawableFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -166,10 +166,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cimgui\cimgui.h" />
+    <ClInclude Include="src\core\drawables\DrawableVariationUnion.h" />
+    <ClInclude Include="src\core\drawables\factories\IClickableDrawableFactory.h" />
+    <ClInclude Include="src\core\input\IClickableDrawableManager.h" />
+    <ClInclude Include="src\core\drawables\factories\PlanetDrawableFactory.h" />
+    <ClInclude Include="src\core\drawables\drawable classes\PlanetDrawable.h" />
+    <ClInclude Include="src\core\drawables\DrawableFactoryManager.h" />
     <ClInclude Include="quartRenderDLLImplUtils.h" />
     <ClInclude Include="src\core\drawables\DrawDataStructs.h" />
     <ClInclude Include="src\core\drawables\factories\IDrawableFactory.h" />
-    <ClInclude Include="src\core\drawables\IVariableDrawable.h" />
     <ClInclude Include="src\core\input\inputStructs.h" />
     <ClInclude Include="src\core\renderers\IWindowedRenderer.h" />
     <ClInclude Include="src\core\renderers\OnScreenRendererIMGUI.h" />
@@ -205,8 +210,13 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="cimgui\cimgui.cpp" />
+    <ClCompile Include="src\core\drawables\factories\IClickableDrawableFactory.cpp" />
+    <ClCompile Include="src\core\input\IClickableDrawableManager.cpp" />
+    <ClCompile Include="src\core\drawables\factories\PlanetDrawableFactory.cpp" />
+    <ClCompile Include="src\core\drawables\drawable classes\PlanetDrawable.cpp" />
+    <ClCompile Include="src\core\drawables\DrawableFactoryManager.cpp" />
+    <ClCompile Include="QuartRender_testImpl.cpp" />
     <ClCompile Include="src\core\drawables\factories\IDrawableFactory.cpp" />
-    <ClCompile Include="src\core\drawables\IVariableDrawable.cpp" />
     <ClCompile Include="src\core\renderers\IWindowedRenderer.cpp" />
     <ClCompile Include="src\core\renderers\OnScreenRendererIMGUI.cpp" />
     <ClCompile Include="src\core\generic utils\IUniquelyIdentifiable.cpp" />

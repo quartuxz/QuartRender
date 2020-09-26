@@ -11,7 +11,7 @@ friend class VertexArray;
 friend class BufferLayout;
 friend class CustomBufferLayout;
 private:
-	GLboolean m_isNormalized;
+	GLboolean m_shouldNormalize;
 	GLuint m_numberOfElements;
 	GLenum m_type;
 	GLuint m_attributeIndex = 0;
@@ -25,7 +25,7 @@ private:
 
 public:
 
-	BufferLayoutElement(GLuint numberOfElements, GLenum type, GLboolean isNormalized)noexcept;
+	BufferLayoutElement(GLuint numberOfElements, GLenum type, GLboolean shouldNormalize)noexcept;
 	
 };
 
@@ -52,7 +52,7 @@ public:
 	//takes the entire per vertex size
 	CustomBufferLayout(GLsizei layoutSize)noexcept;
 
-	void addBufferLayoutElement(GLuint attributeIndex, GLuint numberOfElements, GLenum type, GLboolean isNormalized, GLuint attributeOffset);
+	void addBufferLayoutElement(GLuint attributeIndex, GLuint numberOfElements, GLenum type, GLboolean shouldNormalize, GLuint attributeOffset);
 };
 
 

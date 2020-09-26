@@ -1,7 +1,8 @@
 #pragma once
+
 #include <cstdint>
-#include "src/vendor/imgui/imgui.h"
 #include "src/core/input/inputStructs.h"
+#include "src/core/drawables/drawable classes/PlanetDrawable.h"
 
 
 #ifdef QUARTRENDER_EXPORTS
@@ -35,6 +36,12 @@ extern "C" {
 	QUARTRENDER_API int quartRenderFunc(renderImage)(RendererHandle renderer, ErrorLogHandle errorLog);
 	QUARTRENDER_API int quartRenderFunc(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle errorLog, bool *val);
 
+	//drawing
+	QUARTRENDER_API int quartRenderFunc(createPlanet)(ErrorLogHandle errorLog,  const char *planetClassName, PlanetCharacteristics planetCharacteristics);
+	QUARTRENDER_API int quartRenderFunc(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog, const char *planetClassName, const char *planetName, double posx, double posy);
+	//~drawing
+
+
 		//deprecated
 	QUARTRENDER_API void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey);
 
@@ -50,11 +57,18 @@ extern "C" {
 	//util
 	QUARTRENDER_API void quartRenderFunc(getGLVersion)(char*);
 	
+
+
 	//input
 	QUARTRENDER_API int quartRenderFunc(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput *keyboardInput);
 	QUARTRENDER_API int quartRenderFunc(getAndPopLastMouseButtonInput)(RendererHandle renderer, ErrorLogHandle errorLog, MouseButtonInput *mouseButtonInput);
 	QUARTRENDER_API int quartRenderFunc(getAndPopLastScrollInput)(RendererHandle renderer, ErrorLogHandle errorLog, ScrollInput* scrollInput);
 	QUARTRENDER_API int quartRenderFunc(getCurrentCursorPosition)(RendererHandle renderer, ErrorLogHandle errorLog, CursorPosition *cursorPosition);
+	//~input
+
+
+
+
 
 	//tests (THEY USE std::cout/clog/cerr but only for testing) never use these functions in final product
 		//run after initQuartRender but before anything else

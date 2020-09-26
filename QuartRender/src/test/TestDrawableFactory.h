@@ -6,7 +6,7 @@
 #include "../core/renderers/RendererThreadManager.h"
 #include "../core/drawables/factories/IDrawableFactory.h"
 
-class TestDrawableFactory final: public IDrawableFactory<TestDrawable>
+class TestDrawableFactory final: public IDrawableFactory
 {
 private:
 	TestDrawable *m_getNewDrawable()override;
