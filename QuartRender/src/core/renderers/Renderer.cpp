@@ -34,7 +34,7 @@ Renderer::Renderer(unsigned int width, unsigned int height):
 
 Renderer::~Renderer()
 {
-
+    glfwDestroyWindow(m_window);
 }
 
 bool Renderer::windowShouldClose()

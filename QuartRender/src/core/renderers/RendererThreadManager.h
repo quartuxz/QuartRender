@@ -77,6 +77,8 @@ public:
 	void display();
 
 
+	DrawData& getDrawDataRef()noexcept;
+
 	const std::vector<std::uint8_t>* getImageBuffer()const noexcept;
 
 	~RendererThreadManager();

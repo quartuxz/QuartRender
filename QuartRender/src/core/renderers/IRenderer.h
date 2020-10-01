@@ -44,13 +44,15 @@ public:
 	virtual const std::vector<std::uint8_t>* getImageBuffer()const noexcept;
 
 
-	virtual unsigned int getViewportWidth()const noexcept;
-	virtual unsigned int getViewportHeight()const noexcept;
+	unsigned int getViewportWidth()const noexcept;
+	unsigned int getViewportHeight()const noexcept;
 
 	//TODO: test what happens when I put noexcept here
 	virtual void setViewportDimensions(unsigned int sizex, unsigned int sizey);
 
 	virtual void addDrawable(IDrawable *drawable);
+
+	DrawData& getDrawDataRef()noexcept;
 
 	virtual ~IRenderer();
 

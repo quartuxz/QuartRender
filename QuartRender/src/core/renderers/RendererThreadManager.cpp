@@ -7,7 +7,7 @@
 //TODO: fix terrible cpu usage (probably the polling loop)
 void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned int sizex, unsigned int sizey, RendererTypes rendererType)
 {
-	InputManager::registerInputManagerInThread();
+
 	switch (rendererType)
 	{
 	case RendererTypes::onscreenRendererIMGUI:
@@ -22,7 +22,6 @@ void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned 
 	default:
 		break;
 	}
-
 
 	pThis->m_rendererConstructed.store(true);
 	while (true) {
@@ -69,7 +68,6 @@ void RendererThreadManager::m_threadFunc(RendererThreadManager* pThis, unsigned 
 	}
 	LOG_TO_CONSOLE_COND("RENDERING THREAD EXIT!");
 	delete pThis->m_renderer;
-	InputManager::unregisterInputManagerInThread();
 	pThis->m_renderer = nullptr;
 	pThis->m_finishedDestruction.store(true);
 }
@@ -188,6 +186,11 @@ void RendererThreadManager::display()
 {
 	//issue render call on rendering thread
 	executeOnThread([this]() {m_renderer->display(); });
+}
+
+DrawData& RendererThreadManager::getDrawDataRef() noexcept
+{
+	return m_renderer->getDrawDataRef();
 }
 
 const std::vector<std::uint8_t>* RendererThreadManager::getImageBuffer() const noexcept

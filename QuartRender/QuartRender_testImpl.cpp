@@ -26,7 +26,7 @@ static std::vector<TestDrawable*> testDrawables;
 
 static TestDrawableFactory fac;
 
-const char* quartRenderFunc(runTests)()
+const char* quartRenderFuncName(runTests)()
 {
     static std::string testThatFailed = "";
     if (testThatFailed != "") {
@@ -43,7 +43,7 @@ const char* quartRenderFunc(runTests)()
 }
 
 
-int quartRenderFunc(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawableName, float posx, float posy)
+int quartRenderFuncName(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog, char* testDrawableName, float posx, float posy)
 {
     LOG_TO_CONSOLE_COND("draw test called.");
     CATCH_LOG_RETURN_GL(
@@ -57,13 +57,13 @@ int quartRenderFunc(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog, 
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(destroyAllDrawTests)()
+int quartRenderFuncName(destroyAllDrawTests)()
 {
 
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(addTestError)(ErrorLogHandle errorLog)
+int quartRenderFuncName(addTestError)(ErrorLogHandle errorLog)
 {
     GET_ERROR_LOG(errorLog)->log(std::runtime_error("HELLO MY FRIEND!!:D"));
     return SUCCESS_TERMINATE_CODE_GL;
@@ -71,7 +71,7 @@ int quartRenderFunc(addTestError)(ErrorLogHandle errorLog)
 
 
 
-int quartRenderFunc(startTestRenderer)(unsigned int sizex, unsigned int sizey)
+int quartRenderFuncName(startTestRenderer)(unsigned int sizex, unsigned int sizey)
 {
     try {
         testRenderer = new RendererThreadManager(sizex, sizey, RendererTypes::onscreenRenderer);
@@ -83,7 +83,7 @@ int quartRenderFunc(startTestRenderer)(unsigned int sizex, unsigned int sizey)
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(renderImageTest)(const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
+int quartRenderFuncName(renderImageTest)(const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     try {
         TestDrawable test;
@@ -105,13 +105,13 @@ int quartRenderFunc(renderImageTest)(const std::uint8_t** imgbuf, unsigned int* 
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(stopTestRenderer)()
+int quartRenderFuncName(stopTestRenderer)()
 {
     delete testRenderer;
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(testFunc)(const char* in)
+int quartRenderFuncName(testFunc)(const char* in)
 {
     int count = 0;
     while (in[count] != '\0')
@@ -122,7 +122,7 @@ int quartRenderFunc(testFunc)(const char* in)
     return count;
 }
 
-void quartRenderFunc(imageTest)(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey)
+void quartRenderFuncName(imageTest)(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     *sizex = 800;
     *sizey = 800;
@@ -146,12 +146,12 @@ void quartRenderFunc(imageTest)(unsigned char** imgbuf, unsigned int* sizex, uns
     }
 }
 
-void quartRenderFunc(windowTest)()
+void quartRenderFuncName(windowTest)()
 {
     mainNOT();
 }
 
-void quartRenderFunc(testStringFunc)(char* out, unsigned int* len)
+void quartRenderFuncName(testStringFunc)(char* out, unsigned int* len)
 {
     const char start[] = "testfun";
     if (out == nullptr) {
@@ -162,7 +162,7 @@ void quartRenderFunc(testStringFunc)(char* out, unsigned int* len)
     }
 }
 
-int quartRenderFunc(structPassTest)(testStruct* tstStrc)
+int quartRenderFuncName(structPassTest)(testStruct* tstStrc)
 {
     tstStrc->data16 = 69;
     tstStrc->data8 = 88;

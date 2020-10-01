@@ -245,6 +245,9 @@
     <ClCompile Include="src\core\drawables\factories\IClickableDrawableFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\drawables\DrawDataStructs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="render_res\tex\cryo_area_1.png">

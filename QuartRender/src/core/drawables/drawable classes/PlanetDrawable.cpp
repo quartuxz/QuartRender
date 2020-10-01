@@ -45,7 +45,10 @@ static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generatePlanetOutLi
 
 	//reserve the total amount of vertex data(2 floats per vertex for x and y)
 	retval->first.reserve(points*2+2*2);
-	retval->second.reserve(points);
+	//reserve total amount of index data,
+	//each new pòint forms a triangle that is composed of 3 vertices, thus there are 3 indices per point
+	//(might be more or less this is just a rough reserve, didnt do the math properly)
+	retval->second.reserve(points*3);
 
 
 	//add the circle centre vertex
@@ -152,7 +155,8 @@ DrawableTypes PlanetDrawable::getDrawableType() const noexcept
 
 void PlanetDrawable::draw(const DrawData& drawData)
 {
-	glm::mat4 mvp = drawData.getViewProj2D() * m_drawVariation.modelTransform;
+	//select default one in template(2d)
+	glm::mat4 mvp = drawData.getViewProj({DEFAULT_2D_GET_FLAGS}) * m_drawVariation.modelTransform;
 
 
 	u_color->setUniform(0.8f, 0.8f, 0.6f, 1.0f);

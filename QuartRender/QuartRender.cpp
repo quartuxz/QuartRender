@@ -24,7 +24,7 @@
 
 static DrawableFactoryManager *theDrawableFactoryManager;
 
-int quartRenderFunc(initQuartRender)()
+int quartRenderFuncName(initQuartRender)()
 {
     try {
         theDrawableFactoryManager = new DrawableFactoryManager();
@@ -35,13 +35,13 @@ int quartRenderFunc(initQuartRender)()
    
     return SUCCESS_TERMINATE_CODE_GL;
 }
-ErrorLogHandle quartRenderFunc(createLogger)()
+ErrorLogHandle quartRenderFuncName(createLogger)()
 {
     return new ErrorLog();
 }
 
 //TODO: invalid argument detection
-RendererHandle quartRenderFunc(createRenderer)(ErrorLogHandle errorLog, unsigned int startx, unsigned int starty, unsigned int rendererType)
+RendererHandle quartRenderFuncName(createRenderer)(ErrorLogHandle errorLog, unsigned int startx, unsigned int starty, unsigned int rendererType)
 {
     RendererThreadManager* retVal = nullptr;
     try{
@@ -57,14 +57,14 @@ RendererHandle quartRenderFunc(createRenderer)(ErrorLogHandle errorLog, unsigned
     return retVal;
 }
 
-int quartRenderFunc(renderImage)(RendererHandle renderer, ErrorLogHandle errorLog)
+int quartRenderFuncName(renderImage)(RendererHandle renderer, ErrorLogHandle errorLog)
 {
     LOG_TO_CONSOLE_COND("render image started.");
     CATCH_LOG_RETURN_GL(theDrawableFactoryManager->endFrame(); GET_RENDERER_MULT(renderer)->display();, GET_ERROR_LOG(errorLog));
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle errorLog, bool* val)
+int quartRenderFuncName(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle errorLog, bool* val)
 {
     CATCH_LOG_RETURN_GL(
     *val = GET_RENDERER_MULT(renderer)->getAndAllowClose();,
@@ -73,7 +73,17 @@ int quartRenderFunc(getAndAllowClose)(RendererHandle renderer, ErrorLogHandle er
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-QUARTRENDER_API int quartRenderFunc(createPlanet)(ErrorLogHandle errorLog, const char* planetClassName, PlanetCharacteristics planetCharacteristics)
+uint32_t quartRenderFuncName(getViewportWidth)(RendererHandle renderer)
+{
+    return GET_RENDERER_MULT(renderer)->getViewportWidth();
+}
+
+uint32_t quartRenderFuncName(getViewportHeight)(RendererHandle renderer)
+{
+    return GET_RENDERER_MULT(renderer)->getViewportHeight();
+}
+
+QUARTRENDER_API int quartRenderFuncName(createPlanet)(ErrorLogHandle errorLog, const char* planetClassName, PlanetCharacteristics planetCharacteristics)
 {
     CATCH_LOG_RETURN_GL(
     PlanetDrawableFactory* planetFac = new PlanetDrawableFactory(planetCharacteristics);
@@ -83,7 +93,7 @@ QUARTRENDER_API int quartRenderFunc(createPlanet)(ErrorLogHandle errorLog, const
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog, const char* planetClassName, const char* planetName, double posx, double posy)
+int quartRenderFuncName(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog, const char* planetClassName, const char* planetName, double posx, double posy)
 {
     CATCH_LOG_RETURN_GL(
     glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(posx, posy, 0.0f));
@@ -95,7 +105,21 @@ int quartRenderFunc(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
+int quartRenderFuncName(zoom)(RendererHandle renderer, ErrorLogHandle errorLog, double delta)
+{
+    CATCH_LOG_RETURN_GL(GET_RENDERER_MULT(renderer)->getDrawDataRef().zoom(delta);,
+        GET_ERROR_LOG(errorLog));
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+int quartRenderFuncName(displace)(RendererHandle renderer, ErrorLogHandle errorLog, float xdisplace, float ydisplace, float zdisplace)
+{
+    CATCH_LOG_RETURN_GL(GET_RENDERER_MULT(renderer)->getDrawDataRef().displace(glm::vec3(xdisplace, ydisplace, zdisplace));,
+        GET_ERROR_LOG(errorLog));
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+void quartRenderFuncName(getRenderImage)(RendererHandle renderer, const std::uint8_t** imgbuf, unsigned int* sizex, unsigned int* sizey)
 {
     LOG_TO_CONSOLE_COND("getRenderImage called.");
     auto rendererInstance = GET_RENDERER_MULT(renderer);
@@ -106,7 +130,7 @@ void quartRenderFunc(getRenderImage)(RendererHandle renderer, const std::uint8_t
     
 }
 
-void quartRenderFunc(getLogString)(ErrorLogHandle errorLog, char* str, unsigned int *len)
+void quartRenderFuncName(getLogString)(ErrorLogHandle errorLog, char* str, unsigned int *len)
 {
     std::string logString = GET_ERROR_LOG(errorLog)->getLog();
 
@@ -119,51 +143,51 @@ void quartRenderFunc(getLogString)(ErrorLogHandle errorLog, char* str, unsigned 
 }
 
 
-int quartRenderFunc(destroyRenderer)(RendererHandle renderer)
+int quartRenderFuncName(destroyRenderer)(RendererHandle renderer)
 {
     theDrawableFactoryManager->destroyDrawablesForRenderer(GET_RENDERER_MULT(renderer));
     delete GET_RENDERER_MULT(renderer);
     return SUCCESS_TERMINATE_CODE_GL;
 }
-int quartRenderFunc(destroyLogger)(ErrorLogHandle errorLog)
+int quartRenderFuncName(destroyLogger)(ErrorLogHandle errorLog)
 {
     delete GET_ERROR_LOG(errorLog);
     return SUCCESS_TERMINATE_CODE_GL;
 }
-int quartRenderFunc(exitQuartRender)()
+int quartRenderFuncName(exitQuartRender)()
 {
     delete theDrawableFactoryManager;
     glfwTerminate();
     InputManager::destroyAllInputManagers();
     return SUCCESS_TERMINATE_CODE_GL;
 }
-void quartRenderFunc(getGLVersion)(char*)
+void quartRenderFuncName(getGLVersion)(char*)
 {
 	glGetString(GL_VERSION);
 }
 
-int quartRenderFunc(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput* keyboardInput)
+int quartRenderFuncName(getAndPopLastKeyboardInput)(RendererHandle renderer, ErrorLogHandle errorLog, KeyboardInput* keyboardInput)
 {
     CATCH_LOG_RETURN_GL(*keyboardInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestKeyboardInput();,
         GET_ERROR_LOG(errorLog))
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(getAndPopLastMouseButtonInput)(RendererHandle renderer, ErrorLogHandle errorLog, MouseButtonInput* mouseButtonInput)
+int quartRenderFuncName(getAndPopLastMouseButtonInput)(RendererHandle renderer, ErrorLogHandle errorLog, MouseButtonInput* mouseButtonInput)
 {
     CATCH_LOG_RETURN_GL(*mouseButtonInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestMouseButtonInput();,
         GET_ERROR_LOG(errorLog))
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(getAndPopLastScrollInput)(RendererHandle renderer, ErrorLogHandle errorLog, ScrollInput* scrollInput)
+int quartRenderFuncName(getAndPopLastScrollInput)(RendererHandle renderer, ErrorLogHandle errorLog, ScrollInput* scrollInput)
 {
     CATCH_LOG_RETURN_GL(*scrollInput = GET_RENDERER_MULT(renderer)->getInputManager()->getAndPopOldestScrollInput();,
         GET_ERROR_LOG(errorLog))
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFunc(getCurrentCursorPosition)(RendererHandle renderer, ErrorLogHandle errorLog, CursorPosition* cursorPosition)
+int quartRenderFuncName(getCurrentCursorPosition)(RendererHandle renderer, ErrorLogHandle errorLog, CursorPosition* cursorPosition)
 {
     CATCH_LOG_RETURN_GL(*cursorPosition = GET_RENDERER_MULT(renderer)->getInputManager()->getCurrentCursorPosition();,
         GET_ERROR_LOG(errorLog))

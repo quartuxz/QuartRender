@@ -4,9 +4,14 @@
 #include <map>
 #include <vector>
 
+//these are per-thread instances that are associated with unqiue renderers
 static std::map<std::thread::id, InputManager*> inputManagers;
+static std::map<std::thread::id, IWindowedRenderer*> windowedRenderers;
+
+
 static std::vector<InputManager*> unregisteredInputManagers;
 
+//gets the input manager for this thread, which corresponds to a unique renderer
 #define THIS_IMANAGER inputManagers[std::this_thread::get_id()]
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -33,14 +38,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	THIS_IMANAGER->m_keyInputInstances.push(KeyboardInput{key,scancode,action,mods, THIS_IMANAGER->m_IMGUIWantsKeyboard, true});
 }
 
+void windowResize_callback(GLFWwindow* window, int newWindowWidth, int newWindowHeight)
+{
+	windowedRenderers[std::this_thread::get_id()]->setViewportDimensions(newWindowWidth,newWindowHeight);
+}
+
 InputManager::InputManager()noexcept
 {
 	m_isValid.store(true);
 }
 
-void InputManager::registerInputManagerInThread()
+void InputManager::registerInputManagerInThread(IWindowedRenderer *renderer)
 {
 	THIS_IMANAGER = new InputManager();
+	windowedRenderers[std::this_thread::get_id()] = renderer;
 }
 
 void InputManager::unregisterInputManagerInThread()
@@ -48,6 +59,7 @@ void InputManager::unregisterInputManagerInThread()
 	THIS_IMANAGER->m_isValid.store(false);
 	unregisteredInputManagers.push_back(THIS_IMANAGER);
 	inputManagers.erase(std::this_thread::get_id());
+	windowedRenderers.erase(std::this_thread::get_id());
 }
 
 void InputManager::destroyAllInputManagers()noexcept

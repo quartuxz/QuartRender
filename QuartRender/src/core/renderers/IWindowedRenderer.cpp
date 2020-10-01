@@ -20,10 +20,14 @@ IWindowedRenderer::IWindowedRenderer(unsigned int sizex, unsigned int sizey):
         throw std::runtime_error("failed to open window!");
     }
 
+
+    InputManager::registerInputManagerInThread(this);
+
     glfwSetKeyCallback(m_window, key_callback);
     glfwSetMouseButtonCallback(m_window, mouseButton_callback);
     glfwSetScrollCallback(m_window, scroll_callback);
     glfwSetCursorPosCallback(m_window, cursorPosition_callback);
+    glfwSetWindowSizeCallback(m_window, windowResize_callback);
 
     /* Make the window's context current */
     glfwMakeContextCurrent(m_window);
@@ -64,4 +68,6 @@ void IWindowedRenderer::display()
 
 IWindowedRenderer::~IWindowedRenderer()
 {
+    InputManager::unregisterInputManagerInThread();
+    glfwDestroyWindow(m_window);
 }

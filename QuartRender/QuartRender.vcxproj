@@ -210,6 +210,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="cimgui\cimgui.cpp" />
+    <ClCompile Include="src\core\drawables\DrawDataStructs.cpp" />
     <ClCompile Include="src\core\drawables\factories\IClickableDrawableFactory.cpp" />
     <ClCompile Include="src\core\input\IClickableDrawableManager.cpp" />
     <ClCompile Include="src\core\drawables\factories\PlanetDrawableFactory.cpp" />
