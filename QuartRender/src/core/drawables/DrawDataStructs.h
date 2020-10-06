@@ -6,32 +6,37 @@
 
 
 enum class DrawDataGetFlags :uint32_t {
-	get3D = 1 << 0,
-	get2D = 1 << 1,
-	getZoomed = 1 << 2,
-	getDisplacement = 1 << 3
+	getZoomed = 1 << 0,
+	getDisplacement = 1 << 1
+};
+
+enum class DrawDataGetDimensions {
+	get3D,
+	get2D
 };
 
 
-#define DEFAULT_2D_GET_FLAGS DrawDataGetFlags::get2D,DrawDataGetFlags::getZoomed,DrawDataGetFlags::getDisplacement
+#define DEFAULT_DRAW_GET_FLAGS DrawDataGetFlags::getDisplacement,DrawDataGetFlags::getZoomed
 
-//implements all the parameters for a "camara" of sorts
+/// <summary>
+/// implements all the parameters for a "camara" of sorts
+/// </summary>
 struct DrawData {
 private:
 
-	typedef std::pair<glm::mat4, size_t> updateableMatrix;
+	typedef std::pair<glm::f64mat4, size_t> updateableMatrix;
 
-	glm::mat4 m_view;
-	glm::mat4 m_projection2D;
-	glm::mat4 m_projection3D;
+	glm::f64mat4 m_view;
+	glm::f64mat4 m_projection2D;
+	glm::f64mat4 m_projection3D;
 
 
-	glm::mat4 m_viewProj2D;
-	glm::mat4 m_viewProj3D;
+	glm::f64mat4 m_viewProj2D;
+	glm::f64mat4 m_viewProj3D;
 
 
 	double m_zoomLevel = 1;
-	glm::vec3 m_displacement = glm::vec3(0,0,0);
+	glm::f64vec3 m_displacement = glm::f64vec3(0,0,0);
 
 	//unuseed things, their purpose was to facilitate pre-calculation caching,
 	//but it would be exorbitant to implement now at least.
@@ -47,28 +52,32 @@ private:
 public:
 
 
-	DrawData(glm::mat4 view, glm::mat4 projection2D, glm::mat4 projection3D);
+	DrawData(const glm::f64mat4& view, const glm::f64mat4& projection2D, const glm::f64mat4& projection3D);
 
-	void setView(glm::mat4 view)noexcept;
-	void setProjection2D(glm::mat4 projection2D)noexcept;
-	void setProjection3D(glm::mat4 projection3D)noexcept;
+	void setView(const glm::f64mat4 &view)noexcept;
+	void setProjection2D(const glm::f64mat4 &projection2D)noexcept;
+	void setProjection3D(const glm::f64mat4 &projection3D)noexcept;
 
 	
 	//void viewDisplacement(glm::vec2);
 	//void getViewDisplacement();
 
-	void zoom(double delta);
-	double getZoom()const noexcept;
 
-	void displace(glm::vec3 delta);
-	glm::vec3 getDisplacement()const noexcept;
+	//all the zoom setters and getters:
+		void zoom(double delta)noexcept;
+		void setZoom(double value)noexcept;
+		double getZoom()const noexcept;
+	//~
+
+	void displace(const glm::f64vec3& delta);
+	glm::f64vec3 getDisplacement()const noexcept;
 
 	/// <summary>
 	/// gets only the projection matrix
 	/// </summary>
 	/// <param name="get3D">indicates wether it is the 2d or the 3d version you need</param>
 	/// <returns></returns>
-	glm::mat4 getProjection(bool get3D)const noexcept;
+	glm::f64mat4 getProjection(DrawDataGetDimensions what2DOr3D)const noexcept;
 
 
 	/// <summary>
@@ -77,9 +86,10 @@ public:
 	/// </summary>
 	/// <param name="flags">the flags to apply, make sure not to repeat them</param>
 	/// <returns></returns>
-	glm::mat4 getViewProj(const std::vector<DrawDataGetFlags> &flags)const noexcept;
+	glm::f64mat4 getViewProj(DrawDataGetDimensions what2DOr3D, const std::vector<DrawDataGetFlags> &flags)const noexcept;
 
 	/// <summary>
+	/// deprecated!
 	/// this is probably a bad idea and I may just implement it if performance suffers.
 	/// gets the view projection matrix with the given transformations applied
 	/// this will grow to become a very complex function with
@@ -88,14 +98,14 @@ public:
 	/// </summary>
 	/// <param name="flags"></param>
 	/// <returns></returns>
-	template<uint32_t flags>
-	glm::mat4 getViewProj()noexcept {
-		if constexpr((uint32_t(DrawDataGetFlags::get3D) & flags) > 0) {
+	template<DrawDataGetDimensions what2DOr3D,uint32_t flags>
+	glm::f64mat4 getViewProj()noexcept {
+		if constexpr(what2DOr3D == DrawDataGetDimensions::get3D) {
 			if constexpr((uint32_t(DrawDataGetFlags::getZoomed)&flags)>0) {
-				if (m_viewProj2DZoom.second != m_zoomUpdate) {
-					m_viewProj2DZoom.second = m_zoomUpdate;
+				if (m_viewProj3DZoom.second != m_zoomUpdate) {
+					m_viewProj3DZoom.second = m_zoomUpdate;
 				}
-				return m_viewProj2DZoom.first;
+				return m_viewProj3DZoom.first;
 			}
 			else {
 				return m_viewProj3D;

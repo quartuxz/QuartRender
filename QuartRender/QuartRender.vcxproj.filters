@@ -138,6 +138,24 @@
     <ClInclude Include="src\core\drawables\DrawableVariationUnion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\DrawUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\TestCubeDrawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\TestCubeDrawableFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\DrawImplUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\3DWindowTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\own3DTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -248,6 +266,12 @@
     <ClCompile Include="src\core\drawables\DrawDataStructs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\TestCubeDrawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\TestCubeDrawableFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="render_res\tex\cryo_area_1.png">
@@ -259,11 +283,16 @@
     <None Include="render_res\shaders\testVert.glsl" />
     <None Include="render_res\shaders\flatTestVert.glsl" />
     <None Include="render_res\shaders\flatTestFrag.glsl" />
+    <None Include="render_res\shaders\cubeFrag.glsl" />
+    <None Include="render_res\shaders\cubeVert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="IMGUI_LICENSE.txt" />
     <Text Include="src\vendor\imgui\LICENSE.txt" />
     <Text Include="cimgui\LICENSE.txt" />
     <Text Include="CIMGUI_LICENSE.txt" />
+    <Text Include="STB_LICENSE.txt" />
+    <Text Include="src\vendor\PNGLoader%28stb_image%29\LICENSE.txt" />
+    <Text Include="src\vendor\PNGLoader(stb_image)\TODO.txt" />
   </ItemGroup>
 </Project>

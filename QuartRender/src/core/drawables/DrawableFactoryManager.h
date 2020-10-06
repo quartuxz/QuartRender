@@ -64,7 +64,7 @@ public:
 	void drawAnonymous(RendererThreadManager* renderer, std::string factoryName, const DrawVariation& variation);
 
 	/// <summary>
-	/// destroys all realted memory to a renderer, effectively unbinding any use of the given renderer pointer
+	/// destroys all memory related to a renderer, effectively unbinding any use of the given renderer pointer
 	/// this allows such pointed memory to be safely deleted.
 	/// </summary>
 	/// <param name="renderer">the renderer pointer to be unbound</param>

@@ -51,7 +51,10 @@ extern "C" {
 
 	//camara manipulation:
 		QUARTRENDER_API int quartRenderFuncName(zoom)(RendererHandle renderer, ErrorLogHandle errorLog, double delta);
-		QUARTRENDER_API int quartRenderFuncName(displace)(RendererHandle renderer, ErrorLogHandle errorLog, float xdisplace, float ydisplace, float zdisplace);
+		QUARTRENDER_API int quartRenderFuncName(setZoom)(RendererHandle renderer, ErrorLogHandle errorLog, double value);
+		//this doesnt throw
+			QUARTRENDER_API double quartRenderFuncName(getZoom)(RendererHandle renderer);
+		QUARTRENDER_API int quartRenderFuncName(displace)(RendererHandle renderer, ErrorLogHandle errorLog, double xdisplace, double ydisplace, double zdisplace);
 	//~camara manipulation
 
 
@@ -91,9 +94,12 @@ extern "C" {
 			QUARTRENDER_API const char* quartRenderFuncName(runTests)();
 		//~
 		QUARTRENDER_API int quartRenderFuncName(structPassTest)(testStruct *tstStrc);
+		//drawing tests
 		//drawTest, testDrawableName does nothing!, it is meant to show the true form of a function like this one, where the name of a 
 		//registered drawable is passed in to specify the form of the IDrawable(i.e "earth" displays a sphere/circle with earth-like visuals, as long as "earth" is registered and described)
-		QUARTRENDER_API int quartRenderFuncName(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog,char *testDrawableName, float posx, float posy);
+			QUARTRENDER_API int quartRenderFuncName(drawTest)(RendererHandle renderer, ErrorLogHandle errorLog,char *testDrawableName, float posx, float posy);
+			QUARTRENDER_API int quartRenderFuncName(drawCubeTest)(RendererHandle renderer, ErrorLogHandle errorLog, double posx, double posy, double posz);
+		//~drawing tests
 		QUARTRENDER_API int quartRenderFuncName(destroyAllDrawTests)();
 
 		QUARTRENDER_API int quartRenderFuncName(addTestError)(ErrorLogHandle errorLog);
@@ -106,6 +112,9 @@ extern "C" {
 
 		QUARTRENDER_API int quartRenderFuncName(testFunc)(const char*);
 		QUARTRENDER_API void quartRenderFuncName(imageTest)(unsigned char** imgbuf, unsigned int* sizex, unsigned int* sizey);
+		
+		//full tests
 		QUARTRENDER_API void quartRenderFuncName(windowTest)();
+		QUARTRENDER_API void quartRenderFuncName(full3DWindowTest)();
 	//~tests
 }

@@ -193,6 +193,11 @@ DrawData& RendererThreadManager::getDrawDataRef() noexcept
 	return m_renderer->getDrawDataRef();
 }
 
+const DrawData& RendererThreadManager::getDrawDataRef() const noexcept
+{
+	return m_renderer->getDrawDataRef();
+}
+
 const std::vector<std::uint8_t>* RendererThreadManager::getImageBuffer() const noexcept
 {
 	return m_renderer->getImageBuffer();

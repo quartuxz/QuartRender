@@ -168,6 +168,8 @@
     <ClInclude Include="cimgui\cimgui.h" />
     <ClInclude Include="src\core\drawables\DrawableVariationUnion.h" />
     <ClInclude Include="src\core\drawables\factories\IClickableDrawableFactory.h" />
+    <ClInclude Include="src\core\DrawImplUtils.h" />
+    <ClInclude Include="src\core\DrawUtils.h" />
     <ClInclude Include="src\core\input\IClickableDrawableManager.h" />
     <ClInclude Include="src\core\drawables\factories\PlanetDrawableFactory.h" />
     <ClInclude Include="src\core\drawables\drawable classes\PlanetDrawable.h" />
@@ -192,7 +194,9 @@
     <ClInclude Include="src\core\ShaderProgram.h" />
     <ClInclude Include="src\core\Texture.h" />
     <ClInclude Include="src\core\utilsGL.h" />
+    <ClInclude Include="src\test\3DWindowTest.h" />
     <ClInclude Include="src\test\IUniquelyIdentifiableTest.h" />
+    <ClInclude Include="src\test\own3DTest.h" />
     <ClInclude Include="src\vendor\imgui\imconfig.h" />
     <ClInclude Include="src\vendor\imgui\imgui.h" />
     <ClInclude Include="src\vendor\imgui\imgui_impl_glfw.h" />
@@ -206,6 +210,8 @@
     <ClInclude Include="src\core\VertexBuffer.h" />
     <ClInclude Include="src\test\TestDrawable.h" />
     <ClInclude Include="src\test\TestDrawableFactory.h" />
+    <ClInclude Include="src\test\TestCubeDrawable.h" />
+    <ClInclude Include="src\test\TestCubeDrawableFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -244,11 +250,15 @@
     <ClCompile Include="src\core\VertexBuffer.cpp" />
     <ClCompile Include="src\test\TestDrawable.cpp" />
     <ClCompile Include="src\test\TestDrawableFactory.cpp" />
+    <ClCompile Include="src\test\TestCubeDrawable.cpp" />
+    <ClCompile Include="src\test\TestCubeDrawableFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="render_res\tex\cryo_area_1.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="render_res\shaders\cubeFrag.glsl" />
+    <None Include="render_res\shaders\cubeVert.glsl" />
     <None Include="render_res\shaders\flatTestFrag.glsl" />
     <None Include="render_res\shaders\flatTestVert.glsl" />
     <None Include="render_res\shaders\testFrag.glsl" />
@@ -259,6 +269,9 @@
     <Text Include="CIMGUI_LICENSE.txt" />
     <Text Include="IMGUI_LICENSE.txt" />
     <Text Include="src\vendor\imgui\LICENSE.txt" />
+    <Text Include="src\vendor\PNGLoader%28stb_image%29\LICENSE.txt" />
+    <Text Include="src\vendor\PNGLoader(stb_image)\TODO.txt" />
+    <Text Include="STB_LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

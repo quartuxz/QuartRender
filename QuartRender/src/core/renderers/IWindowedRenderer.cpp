@@ -14,7 +14,7 @@ IWindowedRenderer::IWindowedRenderer(unsigned int sizex, unsigned int sizey):
 
     /* Create a windowed mode window and its OpenGL context */
     m_window = glfwCreateWindow(sizex, sizey, "...", NULL, NULL);
-    if (!m_window)
+    if (m_window == nullptr)
     {
         glfwTerminate();
         throw std::runtime_error("failed to open window!");
@@ -38,9 +38,12 @@ IWindowedRenderer::IWindowedRenderer(unsigned int sizex, unsigned int sizey):
 
     glfwSwapInterval(0);
 
+
+    //TODO: maybe these hints should be in IRendererer? idk
     THROW_ERRORS_GL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     THROW_ERRORS_GL(glEnable(GL_BLEND));
     THROW_ERRORS_GL(glEnable(GL_DEPTH_TEST));
+    THROW_ERRORS_GL(glDepthFunc(GL_LESS));
 
     //CLEAR BUFFERS TO TEST COLOR:
     THROW_ERRORS_GL(glClearColor(0.7f, 0.5f, 0.5f, 1.0f));

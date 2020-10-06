@@ -45,7 +45,7 @@ void TestDrawable::draw(const DrawData& drawData)
 {
     LOG_TO_CONSOLE_COND("draw started.");
 
-    glm::mat4 mvp = drawData.getViewProj({DEFAULT_2D_GET_FLAGS}) * m_drawVariation.modelTransform;
+    glm::f64mat4 mvp = drawData.getViewProj(DrawDataGetDimensions::get2D,{DEFAULT_DRAW_GET_FLAGS}) * m_drawVariation.modelTransform;
 
     LOG_TO_CONSOLE_COND("mvp calculated.");
     u_color->setUniform(0.5f, 0.5f, 0.7f, 1.0f);

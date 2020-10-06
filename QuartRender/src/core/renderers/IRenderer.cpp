@@ -4,8 +4,6 @@
 
 bool IRenderer::m_glfwIsInit = false;
 
-//TODO: consider moving the viewport resize capabilities here
-
 void IRenderer::m_clear() const
 {
 	THROW_ERRORS_GL_FAST(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -15,8 +13,17 @@ IRenderer::IRenderer(unsigned int sizex, unsigned int sizey):
 	m_width(sizex),
 	m_height(sizey),
 	//TODO: actually implement the projection properly(second argument to this function is perspective projection matrix)
-	m_drawData(glm::mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), glm::mat4(1.0f))
+	m_drawData(glm::f64mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), glm::perspective(glm::radians(45.0f), sizex/(float)sizey, 0.1f, 100.0f))
 {
+	//FOR TESTING!
+	/*
+	m_drawData.setView(glm::lookAt(
+		glm::vec3(4, 3, -3), // Camera is at (4,3,-3), in World Space
+		glm::vec3(0, 0, 0), // and looks at the origin
+		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+	));
+	*/
+
 	if (!m_glfwIsInit) {
 		glfwSetErrorCallback(glfw_error_callback);
 		if (!glfwInit())
@@ -73,7 +80,7 @@ unsigned int IRenderer::getViewportHeight() const noexcept
 
 void IRenderer::setViewportDimensions(unsigned int sizex, unsigned int sizey)
 {
-	//TODO: actually implement the projection properly(second argument to this function is perspective projection matrix)
+	//TODO: implement the perspective matrix reshaping here
 	//the line below sets a new ortho-projection matrix(only 2d) that scales the viewport to not allow it to be squished
 	//this works for both window-bound and to-memory rendering routines, its only purpose is to scale all geometry to always be portrayed
 	//correctly regardless of the dimensions of the viewport.
@@ -88,6 +95,11 @@ void IRenderer::addDrawable(IDrawable* drawable)
 }
 
 DrawData& IRenderer::getDrawDataRef() noexcept
+{
+	return m_drawData;
+}
+
+const DrawData& IRenderer::getDrawDataRef() const noexcept
 {
 	return m_drawData;
 }

@@ -80,7 +80,6 @@ static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generatePlanetOutLi
 			shortestAngleOffset = (2 * M_PI) - shortestAngleOffset;
 		}
 
-
 		//determine the length of the isoceles triangle formed between the center of the circle, the first point,
 		//and the current point i
 		double isoscelesBase = radius*sqrt(2-2*(cos(shortestAngleOffset)));
@@ -145,7 +144,7 @@ PlanetDrawable::PlanetDrawable(const PlanetCharacteristics& characteristics):
 
 bool PlanetDrawable::setAndPop()
 {
-	return 	IDrawable::setAndPop();;
+	return 	IDrawable::setAndPop();
 }
 
 DrawableTypes PlanetDrawable::getDrawableType() const noexcept
@@ -156,7 +155,12 @@ DrawableTypes PlanetDrawable::getDrawableType() const noexcept
 void PlanetDrawable::draw(const DrawData& drawData)
 {
 	//select default one in template(2d)
-	glm::mat4 mvp = drawData.getViewProj({DEFAULT_2D_GET_FLAGS}) * m_drawVariation.modelTransform;
+	
+	//unscales the shape so that is does not change in size when zooming as it behaves more like a UI
+	//element than an actual graphical entity(a 2d planet is just there for visualization)
+	m_drawVariation.modelTransform = glm::scale(m_drawVariation.modelTransform, glm::f64vec3(1/drawData.getZoom(),1/drawData.getZoom(),1));
+	
+	glm::f64mat4 mvp = drawData.getViewProj(DrawDataGetDimensions::get2D,{DEFAULT_DRAW_GET_FLAGS}) * m_drawVariation.modelTransform;
 
 
 	u_color->setUniform(0.8f, 0.8f, 0.6f, 1.0f);

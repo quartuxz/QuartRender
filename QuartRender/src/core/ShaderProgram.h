@@ -2,6 +2,7 @@
 #include <optional>
 #include <string>
 #include <optional>
+
 #include "GL/glew.h"
 #include "glm/glm.hpp"
 #include "utilsGL.h"
@@ -29,6 +30,7 @@ public:
 enum class UniformTypes:unsigned int {
 	INT_1, FLOAT_4, FLOAT_MAT_4x4, ENUM_MAX
 };
+
 
 //TODO: specialize this class for more and differen uniform types
 template<UniformTypes uniformType>
@@ -60,10 +62,11 @@ private:
 public:
 	ShaderProgram(const std::optional<std::string> &vertexShader = std::nullopt, const std::optional<std::string>&fragmentShader = std::nullopt);
 
-	//TAKES CARE OF DELETING THE POINTER RETURNED(DELETION HAPPENS WHEN THE PARENT SHADER PROGRAM CALL ITS DESTRUCTOR!)
+	//TAKES CARE OF NOT DELETING THE POINTER RETURNED(DELETION HAPPENS WHEN THE PARENT SHADER PROGRAM CALLS ITS DESTRUCTOR!)
 	template<UniformTypes uniformType, bool throwNotFound = true>
 	UniformGL<uniformType> *getUniformHandle(std::string uniformName) {
 		THROW_ERRORS_GL(GLint uniformID = glGetUniformLocation(m_shaderProgramID, uniformName.c_str()));
+		//error throwing if the uniform name was not found in the program(all shaders, e.g vertex, fragment etc)
 		if constexpr(throwNotFound) {
 			if (uniformID == -1) {
 				std::string errorMsg("Uniform not found!: ");
@@ -86,7 +89,8 @@ public:
 //UniformGL SPECIALIZATIONS HERE:
 
 template<>
-class UniformGL<UniformTypes::FLOAT_4> :public IUniformGL {
+class UniformGL<UniformTypes::FLOAT_4> :public IUniformGL
+{
 	friend class ShaderProgram;
 public:
 	using IUniformGL::IUniformGL;
@@ -97,7 +101,8 @@ public:
 };
 
 template<>
-class UniformGL<UniformTypes::INT_1> :public IUniformGL {
+class UniformGL<UniformTypes::INT_1> :public IUniformGL
+{
 	friend class ShaderProgram;
 public:
 	using IUniformGL::IUniformGL;
@@ -109,12 +114,22 @@ public:
 
 
 template<>
-class UniformGL<UniformTypes::FLOAT_MAT_4x4> :public IUniformGL {
+class UniformGL<UniformTypes::FLOAT_MAT_4x4> :public IUniformGL
+{
 	friend class ShaderProgram;
 public:
 	using IUniformGL::IUniformGL;
+	//note, we calculate everything with 64 bit double containing matrices, but we send the final
+	//matrix converted to a 32 bit float to opengl for use in uniforms.
+	//this is because we dont use 64-bit-per-element matrices in our openGL shader programs.
+	//someday we may.
+	//this means the 64-bit-per-element matrix gets converted to its 32 bit version implicitly when calling this
+	//function to pass it to.
 	void setUniform(const glm::mat4& mat)const {
 		m_shaderProgram->bind();
 		THROW_ERRORS_GL_FAST(glUniformMatrix4fv(m_uniformID, 1,GL_FALSE,&mat[0][0]));
 	}
 };
+
+
+typedef UniformGL<UniformTypes::FLOAT_MAT_4x4> u_MVP_t;

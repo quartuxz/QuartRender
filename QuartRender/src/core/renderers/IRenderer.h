@@ -20,7 +20,7 @@ enum class RendererTypes:unsigned int {
 class IRenderer
 {
 protected:
-	GLFWwindow* m_window;
+	GLFWwindow* m_window = nullptr;
 	std::queue<IDrawable*> m_drawQueue;
 
 	DrawData m_drawData;
@@ -53,6 +53,7 @@ public:
 	virtual void addDrawable(IDrawable *drawable);
 
 	DrawData& getDrawDataRef()noexcept;
+	const DrawData& getDrawDataRef()const noexcept;
 
 	virtual ~IRenderer();
 

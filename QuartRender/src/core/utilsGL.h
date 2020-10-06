@@ -112,18 +112,37 @@ inline std::string loadFile(const std::string& filename) {
     sstr << file.rdbuf();
     return sstr.str();
 }
+
+
+//TODO: add all types
+template<GLenum typeGLID>
+struct getGLType {
+
+};
+
+template<>
+struct getGLType<GL_FLOAT> {
+    typedef GLfloat typeGL;
+};
+
+template<>
+struct getGLType<GL_UNSIGNED_INT> {
+    typedef GLuint typeGL;
+};
+
 //TODO: add all types
 inline size_t getSizeOfGLType(GLenum type)noexcept {
     switch (type)
     {
     case GL_FLOAT:
-        return sizeof(GLfloat);
+        return  sizeof(getGLType<GL_FLOAT>::typeGL);
     case GL_UNSIGNED_INT:
-        return sizeof(GLuint);
+        return sizeof(getGLType<GL_UNSIGNED_INT>::typeGL);
     default:
         break;
     }
 }
+
 
 inline void glfw_error_callback(int error, const char* description)
 {

@@ -15,8 +15,10 @@
 #include "src/test/TestDrawable.h"
 
 #include "src/test/TestDrawableFactory.h"
+#include "src/test/TestCubeDrawableFactory.h"
 #include "src/test/IUniquelyIdentifiableTest.h"
 
+#include "src/test/3DWindowTest.h"
 
 static const char* teststr = "hello";
 
@@ -25,6 +27,7 @@ static RendererThreadManager* testRenderer = nullptr;
 static std::vector<TestDrawable*> testDrawables;
 
 static TestDrawableFactory fac;
+static TestCubeDrawableFactory cubeFac;
 
 const char* quartRenderFuncName(runTests)()
 {
@@ -47,10 +50,30 @@ int quartRenderFuncName(drawTest)(RendererHandle renderer, ErrorLogHandle errorL
 {
     LOG_TO_CONSOLE_COND("draw test called.");
     CATCH_LOG_RETURN_GL(
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(posx, posy, 0.0f));
+        glm::f64mat4 transform = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(posx, posy, 0.0f));
         DrawVariation variation;
         variation.modelTransform = transform;
         fac.addDrawableToRenderer(GET_RENDERER_MULT(renderer), variation);
+    ,
+        GET_ERROR_LOG(errorLog)
+        );
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+QUARTRENDER_API int quartRenderFuncName(drawCubeTest)(RendererHandle renderer, ErrorLogHandle errorLog, double posx, double posy,double posz)
+{
+    CATCH_LOG_RETURN_GL(
+        LOG_TO_CONSOLE("cube drawing started!");
+        glm::f64mat4 translate = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(posx, posy, posz));
+        glm::f64mat4 rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(45.0), glm::f64vec3(1.0f, 1.0f, 1.0f));
+        glm::f64mat4 transform = translate*rotate;
+        
+        
+        DrawVariation variation;
+        variation.modelTransform = transform;
+        LOG_TO_CONSOLE("variation created!");
+        cubeFac.addDrawableToRenderer(GET_RENDERER_MULT(renderer), variation);
+        LOG_TO_CONSOLE("cube drawing finished!");
     ,
         GET_ERROR_LOG(errorLog)
         );
@@ -149,6 +172,11 @@ void quartRenderFuncName(imageTest)(unsigned char** imgbuf, unsigned int* sizex,
 void quartRenderFuncName(windowTest)()
 {
     mainNOT();
+}
+
+QUARTRENDER_API void quartRenderFuncName(full3DWindowTest)()
+{
+    test3D();
 }
 
 void quartRenderFuncName(testStringFunc)(char* out, unsigned int* len)

@@ -26,6 +26,9 @@ static DrawableFactoryManager *theDrawableFactoryManager;
 
 int quartRenderFuncName(initQuartRender)()
 {
+    
+    srand(time(NULL));
+
     try {
         theDrawableFactoryManager = new DrawableFactoryManager();
     }
@@ -96,7 +99,7 @@ QUARTRENDER_API int quartRenderFuncName(createPlanet)(ErrorLogHandle errorLog, c
 int quartRenderFuncName(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog, const char* planetClassName, const char* planetName, double posx, double posy)
 {
     CATCH_LOG_RETURN_GL(
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(posx, posy, 0.0f));
+    glm::f64mat4 transform = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(posx, posy, 0.0f));
     //we set the union to use the model transform part
     DrawVariation variation;
     variation.modelTransform = transform;
@@ -112,9 +115,22 @@ int quartRenderFuncName(zoom)(RendererHandle renderer, ErrorLogHandle errorLog, 
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-int quartRenderFuncName(displace)(RendererHandle renderer, ErrorLogHandle errorLog, float xdisplace, float ydisplace, float zdisplace)
+QUARTRENDER_API int quartRenderFuncName(setZoom)(RendererHandle renderer, ErrorLogHandle errorLog, double value)
 {
-    CATCH_LOG_RETURN_GL(GET_RENDERER_MULT(renderer)->getDrawDataRef().displace(glm::vec3(xdisplace, ydisplace, zdisplace));,
+    CATCH_LOG_RETURN_GL(
+    GET_RENDERER_MULT(renderer)->getDrawDataRef().setZoom(value);,
+        GET_ERROR_LOG(errorLog))
+    return SUCCESS_TERMINATE_CODE_GL;
+}
+
+double quartRenderFuncName(getZoom)(RendererHandle renderer)
+{
+    return GET_RENDERER_MULT(renderer)->getDrawDataRef().getZoom();
+}
+
+int quartRenderFuncName(displace)(RendererHandle renderer, ErrorLogHandle errorLog, double xdisplace, double ydisplace, double zdisplace)
+{
+    CATCH_LOG_RETURN_GL(GET_RENDERER_MULT(renderer)->getDrawDataRef().displace(glm::f64vec3(xdisplace, ydisplace, zdisplace));,
         GET_ERROR_LOG(errorLog));
     return SUCCESS_TERMINATE_CODE_GL;
 }

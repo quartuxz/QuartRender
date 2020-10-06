@@ -88,13 +88,13 @@ static void runAll() {
 
         IndexBuffer indexBuffer(indices, 6);
 
-        glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f,1.5f,-1.0f,1.0f);
-        //glm::mat4 proj = glm::perspective(75.0f, 1.0f,0.1f,10000.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.f,0.f,0.f))*glm::scale(glm::mat4(1.0f),glm::vec3(1,1,1));
-        glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0.f,0.f,0.f));
+        glm::f64mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f,1.5f,-1.0f,1.0f);
+        //glm::f64mat4 proj = glm::perspective(75.0f, 1.0f,0.1f,10000.0f);
+        glm::f64mat4 view = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(0.f,0.f,0.f))*glm::scale(glm::f64mat4(1.0f),glm::f64vec3(1,1,1));
+        glm::f64mat4 model = glm::translate(glm::f64mat4(1.0f),glm::f64vec3(0.f,0.f,0.f));
 
 
-        glm::mat4 mvp = proj * view*model;
+        glm::f64mat4 mvp = proj * view*model;
 
         ShaderProgram program("./render_res/shaders/testVert.glsl", "./render_res/shaders/testFrag.glsl");
 

@@ -3,5 +3,5 @@
 
 
 union DrawVariation {
-	glm::mat4 modelTransform;
+	glm::f64mat4 modelTransform;
 };

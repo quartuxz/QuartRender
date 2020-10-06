@@ -21,7 +21,7 @@ static GLuint m_compileShader(GLenum type, const std::string& source){
         THROW_ERRORS_GL(glDeleteShader(id));
 
         std::stringstream ss;
-        ss << "failed to copile shader, shader type: " << type << ", error: " << message;
+        ss << "failed to compile shader, shader type: " << type << ", error: " << message;
         throw std::runtime_error(ss.str());
 
     }
@@ -61,6 +61,7 @@ ShaderProgram::ShaderProgram(const std::optional<std::string>& vertexShader, con
     m_fragmentShaderID =m_compileShader(GL_FRAGMENT_SHADER, loadFile(fragmentSource));
     m_createShaderProgram();
 
+    LOG_TO_CONSOLE("shader program construction ended.");
 }
 
 void ShaderProgram::bind()const
