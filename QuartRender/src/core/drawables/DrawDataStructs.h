@@ -36,18 +36,18 @@ private:
 
 
 	double m_zoomLevel = 1;
+	double m_initial3DZDisplacement = 10.0;
+	
 	glm::f64vec3 m_displacement = glm::f64vec3(0,0,0);
 
-	//unuseed things, their purpose was to facilitate pre-calculation caching,
+	//unused things, their purpose was to facilitate pre-calculation caching,
 	//but it would be exorbitant to implement now at least.
 	updateableMatrix m_viewProj2DZoom;
 	updateableMatrix m_viewProj3DZoom;
-
-
 	void m_checkAndUpdateZoom();
-
-
 	size_t m_zoomUpdate = 0;
+	//~unused
+
 
 public:
 
@@ -81,6 +81,14 @@ public:
 
 
 	/// <summary>
+	/// calculates the view matrix given the flags on-the-fly with no caching
+	/// </summary>
+	/// <param name="what2Dor3D"></param>
+	/// <param name="flags"></param>
+	/// <returns></returns>
+	glm::f64mat4 getView(DrawDataGetDimensions what2DOr3D, const std::vector<DrawDataGetFlags> &flags)const noexcept;
+
+	/// <summary>
 	/// a more sane version of the templated getViewProj function
 	/// calculates the viewProj with the given flags on the fly applied in the order specified.
 	/// </summary>
@@ -95,6 +103,7 @@ public:
 	/// this will grow to become a very complex function with
 	/// 2^n + 2^(n-1) + 2^(n-2) + ... + 2^1 
 	/// if + else statements where n is the number of unique flags
+	/// not to mention that same amount of mutable caching variables.
 	/// </summary>
 	/// <param name="flags"></param>
 	/// <returns></returns>

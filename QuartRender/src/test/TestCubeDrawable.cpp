@@ -12,14 +12,14 @@
 //both cubeVertices and cubeIndices are here to create a perfect square to test my algorithm against
 static const GLfloat cubeVertices[] =
 {
-	-1, -1, -1,            1.0f, 1.0f, 1.0f, 
-	1, -1, -1,            1.0f, 1.0f, 1.0f,
-	1, 1, -1,            1.0f, 1.0f, 1.0f,
-	-1, 1, -1,            1.0f, 1.0f, 1.0f,
+	-1, -1, -1,            1.0f, 0.5f, 0.2f, 
+	1, -1, -1,            0.0f, 1.0f, 0.4f,
+	1, 1, -1,            0.5f, 1.0f, 1.0f,
+	-1, 1, -1,            0.5f, 1.0f, 1.0f,
 	-1, -1, 1,            1.0f, 1.0f, 1.0f,
-	1, -1, 1,            1.0f, 1.0f, 1.0f,
-	1, 1, 1,            1.0f, 1.0f, 1.0f,
-	-1, 1, 1,            1.0f, 1.0f, 1.0f
+	1, -1, 1,            1.0f, 0.5f, 1.0f,
+	1, 1, 1,            1.0f, 0.5f, 1.0f,
+	-1, 1, 1,            1.0f, 1.0f, 0.5f
 };
 static const GLfloat cubeVertices_noColour[] =
 {
