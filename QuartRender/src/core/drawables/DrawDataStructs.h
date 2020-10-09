@@ -7,7 +7,10 @@
 
 enum class DrawDataGetFlags :uint32_t {
 	getZoomed = 1 << 0,
-	getDisplacement = 1 << 1
+	getDisplacement = 1 << 1,
+	//this one is different from normal zoom as it actually only scales a fixed Z distance to apply 
+	//a z translation based on it
+	getZPlaneZoomed = 1 << 2
 };
 
 enum class DrawDataGetDimensions {
@@ -36,6 +39,8 @@ private:
 
 
 	double m_zoomLevel = 1;
+
+	//TODO: move this to a specific settings singleton class
 	double m_initial3DZDisplacement = 10.0;
 	
 	glm::f64vec3 m_displacement = glm::f64vec3(0,0,0);
@@ -82,7 +87,7 @@ public:
 
 	/// <summary>
 	/// calculates the view matrix given the flags on-the-fly with no caching
-	/// </summary>
+	/// </summary>.
 	/// <param name="what2Dor3D"></param>
 	/// <param name="flags"></param>
 	/// <returns></returns>

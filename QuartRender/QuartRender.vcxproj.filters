@@ -293,6 +293,6 @@
     <Text Include="CIMGUI_LICENSE.txt" />
     <Text Include="STB_LICENSE.txt" />
     <Text Include="src\vendor\PNGLoader%28stb_image%29\LICENSE.txt" />
-    <Text Include="src\vendor\PNGLoader(stb_image)\TODO.txt" />
+    <Text Include="TODO.txt" />
   </ItemGroup>
 </Project>

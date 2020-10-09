@@ -97,16 +97,16 @@ static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generatePlanetOutLi
 		}
 		
 		retval->first.push_back(yfirst-yoffset);
-		//generate the indices in clockwise order
+		//generate the indices in counter-clockwise order
 		//first the centre
 		retval->second.push_back(0);
-		//then the last
-		retval->second.push_back(i);
 		//then the current
+		retval->second.push_back(i+1);
+		//then the last
 		//(keep in mind the current is offset by one from i since the two first vertices
 		//are the centre first and the first point second-> i starts from 1[first point] so the current point
 		//is i+1)
-		retval->second.push_back(i+1);
+		retval->second.push_back(i);
 		
 	}
 
@@ -114,9 +114,9 @@ static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generatePlanetOutLi
 	//first the centre
 	retval->second.push_back(0);
 	//then the last point generated
-	retval->second.push_back(points);
-	//then the first point
 	retval->second.push_back(1);
+	//then the first point
+	retval->second.push_back(points);
 
 
 	return retval;

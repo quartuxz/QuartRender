@@ -85,6 +85,13 @@ glm::f64mat4 DrawData::getView(DrawDataGetDimensions what2DOr3D, const std::vect
 				retval = zoomMat * retval;
 			}
 			else {
+				glm::f64mat4 zoomMat = glm::scale(glm::f64mat4(1.0), glm::f64vec3(m_zoomLevel, m_zoomLevel, m_zoomLevel));
+				retval = zoomMat * retval;
+			}
+			break;
+		case DrawDataGetFlags::getZPlaneZoomed:
+			//only works for 3d
+			if (what2DOr3D == DrawDataGetDimensions::get3D) {
 				wasZoomed3D = true;
 				//we simply translate the 3d objects in the z direction to make them appear "zoomed in" or larger to the camara
 				//since xy are divided by z, we translate z by 1/zoomLevel, thus (x or y) / (1/z) = (x or y)*z, we achieve scaling
@@ -92,7 +99,7 @@ glm::f64mat4 DrawData::getView(DrawDataGetDimensions what2DOr3D, const std::vect
 				//we used a scalar that indicates the nominal distance from everything(or a background back-most "plane" parallel to xy)
 				// this nominal distance is the added z translate to all geometry when zoomLevel is 1
 				//it has the name of m_initial3DZDisplacement
-				glm::f64mat4 zoomMat = glm::translate(glm::f64mat4(1.0), glm::f64vec3(0.0, 0.0, -m_initial3DZDisplacement * 1 / m_zoomLevel));
+				glm::f64mat4 zoomMat = glm::translate(glm::f64mat4(1.0), glm::f64vec3(0.0, 0.0, -m_initial3DZDisplacement / m_zoomLevel));
 				retval = zoomMat * retval;
 			}
 			break;
@@ -100,7 +107,7 @@ glm::f64mat4 DrawData::getView(DrawDataGetDimensions what2DOr3D, const std::vect
 			if (what2DOr3D == DrawDataGetDimensions::get2D) {
 				//copy assingment probably slower than direct multiplication with rvalue, I dont care for now
 				//same happens in other places nearby
-				glm::f64mat4 displacementMat = glm::translate(glm::f64mat4(1.0f), m_displacement);
+				glm::f64mat4 displacementMat = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(m_displacement.x,m_displacement.y,0.0f));
 				retval = displacementMat * retval;
 			}
 			else {

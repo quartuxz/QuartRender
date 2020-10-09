@@ -49,7 +49,8 @@ static const GLuint cubeIndices[] =
 	0, 5, 1
 };
 
-
+//TODO: figure out issues with faulty index generation
+//(ideally update to counter-clockwise)
 IndicesAndVertices_t* generateCube(float distanceToFace) {
 	IndicesAndVertices_t* retval = new IndicesAndVertices_t();
 
@@ -60,21 +61,25 @@ IndicesAndVertices_t* generateCube(float distanceToFace) {
 
 	//manually set the indices(there may be a better way in a loop but im too lazy to think of one)
 	static const GLuint indices[] = {
-		//side faces
-		0,2,3,
-		1,0,3,
-		1,3,5,
-		5,3,7,
-		5,7,4,
-		4,7,6,
+		//left face(if I where the cube and I where facing in the same direction of the front face,
+		//it would be my right side actually, but since im instead facing against it in the way its drawn, its the left)
+		3,2,0,
+		1,3,0,
+		//right(same applies as above)
+		7,5,4,
+		7,4,6,
+		//front face
+		5,7,3,
+		1,5,3,
+		//back face
+		2,4,0,
 		4,2,6,
-		0,2,4,
 		//top face
-		2,7,3,
-		2,6,7,
-		//bottom face
-		0,4,5,
-		0,5,1
+		2,3,7,
+		7,6,2,
+		//down face
+		5,1,0,
+		5,0,4
 	};
 
 

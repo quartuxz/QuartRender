@@ -20,6 +20,12 @@ enum class RendererTypes:unsigned int {
 class IRenderer
 {
 protected:
+
+	//move these to some settings singleton class
+	float m_FOVInDegrees = 45.0f;
+	float m_zNear = 0.1f;
+	float m_zFar = 100.0f;
+
 	GLFWwindow* m_window = nullptr;
 	std::queue<IDrawable*> m_drawQueue;
 
@@ -29,6 +35,7 @@ protected:
 	static bool m_glfwIsInit;
 
 	unsigned int m_width, m_height;
+
 
 	virtual void m_clear()const;
 

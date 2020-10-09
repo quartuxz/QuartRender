@@ -60,12 +60,14 @@ int quartRenderFuncName(drawTest)(RendererHandle renderer, ErrorLogHandle errorL
     return SUCCESS_TERMINATE_CODE_GL;
 }
 
-QUARTRENDER_API int quartRenderFuncName(drawCubeTest)(RendererHandle renderer, ErrorLogHandle errorLog, double posx, double posy,double posz)
+QUARTRENDER_API int quartRenderFuncName(drawCubeTest)(RendererHandle renderer, ErrorLogHandle errorLog, double posx, double posy,double posz, double anglex, double angley, double anglez)
 {
     CATCH_LOG_RETURN_GL(
         LOG_TO_CONSOLE("cube drawing started!");
         glm::f64mat4 translate = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(posx, posy, posz));
-        glm::f64mat4 rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(45.0), glm::f64vec3(1.0f, 1.0f, 1.0f));
+        glm::f64mat4 rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(anglex), glm::f64vec3(1.0f, 0.0f, 0.0f));
+        rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(angley), glm::f64vec3(0.0f, 1.0f, 0.0f)) * rotate;
+        rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(anglez), glm::f64vec3(0.0f, 0.0f, 1.0f)) * rotate;
         glm::f64mat4 transform = translate*rotate;
         
         
