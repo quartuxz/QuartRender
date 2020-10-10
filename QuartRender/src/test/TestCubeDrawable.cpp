@@ -136,6 +136,7 @@ TestCubeDrawable::TestCubeDrawable():
 	m_VertexArray.addBuffer(&m_VertexBuffer, layout);
 
 	u_MVP = m_Program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
+	u_model = m_Program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_model");
 
 	LOG_TO_CONSOLE("test cube drawable constructor body ended!");
 }
@@ -148,13 +149,12 @@ DrawableTypes TestCubeDrawable::getDrawableType() const noexcept
 void TestCubeDrawable::draw(const DrawData& drawData)
 {
 	LOG_TO_CONSOLE("draw started!");
-	m_drawVariation.modelTransform;
 	glm::f64mat4 mvp = drawData.getViewProj(DrawDataGetDimensions::get3D, {DEFAULT_DRAW_GET_FLAGS})*m_drawVariation.modelTransform;
 
 	LOG_TO_CONSOLE("mvp calculated!");
 
 	u_MVP->setUniform(mvp);
-
+	u_model->setUniform(m_drawVariation.modelTransform);
 	LOG_TO_CONSOLE("uniform set!");
 
 	m_Program.bind();

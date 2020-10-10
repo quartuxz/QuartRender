@@ -7,9 +7,9 @@
 
 
 class BufferLayoutElement {
-friend class VertexArray;
 friend class BufferLayout;
 friend class CustomBufferLayout;
+friend class IBufferLayout;
 private:
 	GLboolean m_shouldNormalize;
 	GLuint m_numberOfElements;
@@ -38,8 +38,12 @@ protected:
 	IBufferLayout()noexcept;
 	IBufferLayout(GLsizei layoutSize)noexcept;
 
+	void m_bindLayout()const;
+
 public:
 	virtual GLsizei getLayoutSize()const noexcept;
+
+
 
 	virtual ~IBufferLayout()noexcept;
 };
@@ -79,13 +83,15 @@ public:
 class VertexArray
 {
 private:
-	std::map<uniqueID, const IBufferLayout*> m_BufferLayouts;
+	std::vector<const IBufferLayout*> m_BufferLayouts;
 
 	GLuint m_GLID;
 
 	void m_addLayout(const VertexBuffer* vertexBuffer,const IBufferLayout& bufferLayout);
 public:
 	VertexArray();
+	//TODO: add checking for if two of these function calls add the same buffer
+	//(ideally only one function call per buffer is needed given a different layout than when two are used)
 	void addBuffer(const VertexBuffer* vertexBuffer, const IBufferLayout& bufferLayout);
 
 

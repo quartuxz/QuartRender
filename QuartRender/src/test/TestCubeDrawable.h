@@ -11,6 +11,7 @@ private:
 	DEFAULT_FIELDS_FOR_DRAWABLE()
 
 	u_MVP_t* u_MVP;
+	UniformGL<UniformTypes::FLOAT_MAT_4x4>* u_model;
 public:
 
 	TestCubeDrawable();

@@ -7,13 +7,8 @@ void VertexArray::m_addLayout(const VertexBuffer* vertexBuffer, const IBufferLay
 {
 	bind();
 	vertexBuffer->bind();
-	if (m_BufferLayouts.contains(vertexBuffer->getID())) {
-		delete m_BufferLayouts[vertexBuffer->getID()];
-	}
-	m_BufferLayouts[vertexBuffer->getID()] = new IBufferLayout(bufferLayout);
-	for (const BufferLayoutElement& bufferLayoutElement : m_BufferLayouts[vertexBuffer->getID()]->m_layouts) {
-		bufferLayoutElement.m_bindLayout(m_BufferLayouts[vertexBuffer->getID()]->getLayoutSize());
-	}
+	m_BufferLayouts.push_back(new IBufferLayout(bufferLayout));
+	m_BufferLayouts.back()->m_bindLayout();
 }
 
 VertexArray::VertexArray()
@@ -21,6 +16,9 @@ VertexArray::VertexArray()
 	THROW_ERRORS_GL(glGenVertexArrays(1, &m_GLID));
 }
 
+
+//TODO: add checking for if two of these function calls add the same buffer
+//(ideally only one function call per buffer is needed given a different layout than when two are used)
 void VertexArray::addBuffer(const VertexBuffer* buffer, const IBufferLayout &bufferLayout)
 {
 
@@ -40,8 +38,8 @@ void VertexArray::unbind() const
 
 VertexArray::~VertexArray()
 {
-	for (const auto &bufferLayout:m_BufferLayouts) {
-		delete bufferLayout.second;
+	for (auto bufferLayout:m_BufferLayouts) {
+		delete bufferLayout;
 	}
 	THROW_ERRORS_GL(glDeleteVertexArrays(1, &m_GLID));
 }
@@ -86,6 +84,13 @@ IBufferLayout::IBufferLayout()noexcept
 IBufferLayout::IBufferLayout(GLsizei layoutSize)noexcept:
 	m_layoutSize(layoutSize)
 {
+}
+
+void IBufferLayout::m_bindLayout()const
+{
+	for (const BufferLayoutElement& bufferLayoutElement : m_layouts) {
+		bufferLayoutElement.m_bindLayout(getLayoutSize());
+	}
 }
 
 GLsizei IBufferLayout::getLayoutSize() const noexcept
