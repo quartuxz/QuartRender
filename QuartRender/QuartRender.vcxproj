@@ -260,6 +260,8 @@
     <None Include="render_res\shaders\cubeVert.glsl" />
     <None Include="render_res\shaders\flatTestFrag.glsl" />
     <None Include="render_res\shaders\flatTestVert.glsl" />
+    <None Include="render_res\shaders\planetSphereFrag.glsl" />
+    <None Include="render_res\shaders\planetSphereVert.glsl" />
     <None Include="render_res\shaders\testFrag.glsl" />
     <None Include="render_res\shaders\testVert.glsl" />
   </ItemGroup>

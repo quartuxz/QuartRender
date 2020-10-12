@@ -282,6 +282,8 @@
     <None Include="render_res\shaders\flatTestFrag.glsl" />
     <None Include="render_res\shaders\cubeFrag.glsl" />
     <None Include="render_res\shaders\cubeVert.glsl" />
+    <None Include="render_res\shaders\planetSphereVert.glsl" />
+    <None Include="render_res\shaders\planetSphereFrag.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="IMGUI_LICENSE.txt" />

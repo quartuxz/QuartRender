@@ -12,31 +12,25 @@ void DrawData::m_checkAndUpdateZoom()
 
 
 
-DrawData::DrawData(const glm::f64mat4& view, const glm::f64mat4& projection2D, const glm::f64mat4& projection3D) :
+DrawData::DrawData(const glm::f64mat4& view, const glm::f64mat4& projection2D, const PerspectiveProjection& projection3D) :
 	m_view(view),
 	m_projection2D(projection2D),
 	m_projection3D(projection3D)
 {
-	m_viewProj2D = m_projection2D * m_view;
-	m_viewProj3D = m_projection3D * m_view;
 }
 
 void DrawData::setView(const glm::f64mat4& view) noexcept
 {
 	m_view = view;
-	m_viewProj2D = m_projection2D * m_view;
-	m_viewProj3D = m_projection3D * m_view;
 }
 
 void DrawData::setProjection2D(const glm::f64mat4& projection2D) noexcept {
 	m_projection2D = projection2D;
-	m_viewProj2D = m_projection2D * m_view;
 }
 
-void DrawData::setProjection3D(const glm::f64mat4& projection3D) noexcept
+void DrawData::setProjection3D(const PerspectiveProjection& projection3D) noexcept
 {
 	m_projection3D = projection3D;
-	m_viewProj3D = m_projection3D * m_view;
 }
 
 void DrawData::zoom(double delta)noexcept
@@ -72,7 +66,7 @@ glm::f64mat4 DrawData::getProjection(DrawDataGetDimensions what2DOr3D) const noe
 		return m_projection2D;
 	}
 	else {
-		return m_projection3D;
+		return m_projection3D.getMatrix();
 	}
 }
 
@@ -149,11 +143,63 @@ glm::f64mat4 DrawData::getViewProj(DrawDataGetDimensions what2DOr3D, const std::
 		retval = m_projection2D * retval;
 	}
 	else {
-		retval = m_projection3D * retval;
+		if (std::find(flags.begin(), flags.end(),DrawDataGetFlags::getFOVZoomed)!=flags.end()) {
+			retval = PerspectiveProjection(atan(tan(m_projection3D.getFOVY()) / m_zoomLevel),m_projection3D).getMatrix()*retval;
+		}
+		else {
+			retval = m_projection3D.getMatrix() * retval;
+		}
+
 
 	}
 
 	return retval;
 }
 
+PerspectiveProjection::PerspectiveProjection(float FOVY, float aspect, float near, float far) :
+	m_FOVY(FOVY),
+	m_aspect(aspect),
+	m_near(near),
+	m_far(far),
+	m_mat(glm::perspective(FOVY, aspect, near, far))
+{
+}
 
+PerspectiveProjection::PerspectiveProjection(float FOVY, const PerspectiveProjection& other):
+	m_FOVY(FOVY),
+	m_aspect(other.m_aspect),
+	m_near(other.m_near),
+	m_far(other.m_far),
+	m_mat(glm::perspective(m_FOVY, m_aspect, m_near, m_far))
+{
+}
+
+float PerspectiveProjection::getFOVY() const noexcept
+{
+	return m_FOVY;
+}
+
+float PerspectiveProjection::getFOVX() const noexcept
+{
+	return m_FOVY*m_aspect;
+}
+
+float PerspectiveProjection::getAspect() const noexcept
+{
+	return m_aspect;
+}
+
+float PerspectiveProjection::getNear() const noexcept
+{
+	return m_near;
+}
+
+float PerspectiveProjection::getFar() const noexcept
+{
+	return m_far;
+}
+
+const glm::f64mat4& PerspectiveProjection::getMatrix() const noexcept
+{
+	return m_mat;
+}

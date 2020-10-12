@@ -8,3 +8,8 @@ IMPORTANT:
 		call was made! This should replace the LOG_TO_CONSOLE family of macros in usage and would
 		serve as a debugging tool mostly that should be disabled for release builds. Note: I am still
 		allowed to use macros, ill just make them better hopefully.
+	-add the infrastructure to pass camara orientation to shaders to calcuate phong lighting.
+	-add a settings class and object that saves all useful constants per program instance.
+		(e.g, z-plane default distance for all 3d objects)
+	-add a meters to normalized coordinates converter so it is possible to express coordinates for objects
+		in meters relative to the centre of the solar system.

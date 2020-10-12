@@ -13,7 +13,7 @@ IRenderer::IRenderer(unsigned int sizex, unsigned int sizey):
 	m_width(sizex),
 	m_height(sizey),
 	//TODO: actually implement the projection properly(second argument to this function is perspective projection matrix)
-	m_drawData(glm::f64mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), glm::perspective(glm::radians(m_FOVInDegrees), sizex/(float)sizey, m_zNear, m_zFar))
+	m_drawData(glm::f64mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), PerspectiveProjection(glm::radians(m_FOVInDegrees), sizex / (float)sizey, m_zNear, m_zFar))
 {
 	//FOR TESTING!
 	/*
@@ -85,7 +85,7 @@ void IRenderer::setViewportDimensions(unsigned int sizex, unsigned int sizey)
 	//this works for both window-bound and to-memory rendering routines, its only purpose is to scale all geometry to always be portrayed
 	//correctly regardless of the dimensions of the viewport.
 	m_drawData.setProjection2D(glm::ortho(-(sizex/(float)sizey),(sizex/(float)sizey),-1.0f,1.0f,-1.0f,1.0f));
-	m_drawData.setProjection3D(glm::perspective(glm::radians(m_FOVInDegrees), sizex / (float)sizey, m_zNear, m_zFar));
+	m_drawData.setProjection3D(PerspectiveProjection(glm::radians(m_FOVInDegrees), sizex / (float)sizey, m_zNear, m_zFar));
 
 	m_width = sizex;
 	m_height = sizey;

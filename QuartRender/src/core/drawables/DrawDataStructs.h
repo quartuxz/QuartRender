@@ -10,7 +10,9 @@ enum class DrawDataGetFlags :uint32_t {
 	getDisplacement = 1 << 1,
 	//this one is different from normal zoom as it actually only scales a fixed Z distance to apply 
 	//a z translation based on it
-	getZPlaneZoomed = 1 << 2
+	getZPlaneZoomed = 1 << 2,
+	//only works for 3d
+	getFOVZoomed = 1 << 3
 };
 
 enum class DrawDataGetDimensions {
@@ -19,7 +21,30 @@ enum class DrawDataGetDimensions {
 };
 
 
+//we apply displacement first so that the scaling(zoom) is applied about the centre of the view
+//and not the absolute centre of the coordinate space; atleast for 2d.
 #define DEFAULT_DRAW_GET_FLAGS DrawDataGetFlags::getDisplacement,DrawDataGetFlags::getZoomed
+#define ZPLANE_ZOOMED_DRAW_GET_FLAGS DrawDataGetFlags::getZPlaneZoomed, DrawDataGetFlags::getDisplacement
+
+
+struct PerspectiveProjection {
+private:
+	float m_FOVY, m_aspect, m_near, m_far;
+	glm::f64mat4 m_mat;
+public:
+	//FOVY in radians!
+	PerspectiveProjection(float FOVY, float aspect, float near, float far);
+	//constructs a perspective projection with everything similar except the FOVY which is specified.
+	PerspectiveProjection(float FOVY, const PerspectiveProjection &other);
+	float getFOVY()const noexcept;
+	float getFOVX()const noexcept;
+	float getAspect()const noexcept;
+	float getNear()const noexcept;
+	float getFar()const noexcept;
+	const glm::f64mat4& getMatrix()const noexcept;
+
+};
+
 
 /// <summary>
 /// implements all the parameters for a "camara" of sorts
@@ -27,15 +52,14 @@ enum class DrawDataGetDimensions {
 struct DrawData {
 private:
 
+	//TODO: do some matrix caching if things slow down.
+
+
 	typedef std::pair<glm::f64mat4, size_t> updateableMatrix;
 
 	glm::f64mat4 m_view;
 	glm::f64mat4 m_projection2D;
-	glm::f64mat4 m_projection3D;
-
-
-	glm::f64mat4 m_viewProj2D;
-	glm::f64mat4 m_viewProj3D;
+	PerspectiveProjection m_projection3D;
 
 
 	double m_zoomLevel = 1;
@@ -58,11 +82,11 @@ private:
 public:
 
 
-	DrawData(const glm::f64mat4& view, const glm::f64mat4& projection2D, const glm::f64mat4& projection3D);
+	DrawData(const glm::f64mat4& view, const glm::f64mat4& projection2D, const PerspectiveProjection& projection3D);
 
 	void setView(const glm::f64mat4 &view)noexcept;
 	void setProjection2D(const glm::f64mat4 &projection2D)noexcept;
-	void setProjection3D(const glm::f64mat4 &projection3D)noexcept;
+	void setProjection3D(const PerspectiveProjection &projection3D)noexcept;
 
 	
 	//void viewDisplacement(glm::vec2);
@@ -101,35 +125,5 @@ public:
 	/// <param name="flags">the flags to apply, make sure not to repeat them</param>
 	/// <returns></returns>
 	glm::f64mat4 getViewProj(DrawDataGetDimensions what2DOr3D, const std::vector<DrawDataGetFlags> &flags)const noexcept;
-
-	/// <summary>
-	/// deprecated!
-	/// this is probably a bad idea and I may just implement it if performance suffers.
-	/// gets the view projection matrix with the given transformations applied
-	/// this will grow to become a very complex function with
-	/// 2^n + 2^(n-1) + 2^(n-2) + ... + 2^1 
-	/// if + else statements where n is the number of unique flags
-	/// not to mention that same amount of mutable caching variables.
-	/// </summary>
-	/// <param name="flags"></param>
-	/// <returns></returns>
-	template<DrawDataGetDimensions what2DOr3D,uint32_t flags>
-	glm::f64mat4 getViewProj()noexcept {
-		if constexpr(what2DOr3D == DrawDataGetDimensions::get3D) {
-			if constexpr((uint32_t(DrawDataGetFlags::getZoomed)&flags)>0) {
-				if (m_viewProj3DZoom.second != m_zoomUpdate) {
-					m_viewProj3DZoom.second = m_zoomUpdate;
-				}
-				return m_viewProj3DZoom.first;
-			}
-			else {
-				return m_viewProj3D;
-			}
-			
-		}
-		else{
-			return m_viewProj2D;
-		}
-	}
 
 };

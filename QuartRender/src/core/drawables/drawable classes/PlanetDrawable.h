@@ -24,15 +24,24 @@ private:
 
 
 	IndicesAndVertices_t * m_outlineVerticesAndIndices;
+	IndicesAndVertices_t* m_planetSphereVerticesAndIndices;
+
 
 	VertexArray m_outlineVertexArray;
 	IndexBuffer m_outlineIndexBuffer;
 	ShaderProgram m_outlineProgram;
 	VertexBuffer m_outlineVertexBuffer;
 
+	DEFAULT_FIELDS_FOR_DRAWABLE(planetSphere)
 
+	//for the outline
 	UniformGL<UniformTypes::FLOAT_4>* u_color;
-	UniformGL<UniformTypes::FLOAT_MAT_4x4>* u_MVP;
+	u_MVP_t* u_MVP;
+
+
+	//for the sphere
+	u_MVP_t *u_3DMVP;
+	u_MVP_t *u_model;
 public:
 	PlanetDrawable(const PlanetCharacteristics &characteristics);
 	bool setAndPop()override;

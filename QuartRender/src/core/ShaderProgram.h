@@ -49,20 +49,22 @@ private:
 	static constexpr char m_defaultFragmentSource[] = "defaultFrag.glsl";
 
 
+
 	std::vector<const IUniformGL*> m_uniformHandlers;
 
 	GLuint m_vertexShaderID;
 	GLuint m_fragmentShaderID;
+	GLuint m_geometryShaderID = 0;
 
 	GLuint m_shaderProgramID;
 
-	void m_createShaderProgram();
+	void m_createShaderProgram(bool usesGeometryShader = false);
 
 
 public:
-	ShaderProgram(const std::optional<std::string> &vertexShader = std::nullopt, const std::optional<std::string>&fragmentShader = std::nullopt);
+	ShaderProgram(const std::optional<std::string> &vertexShader = std::nullopt, const std::optional<std::string>&fragmentShader = std::nullopt, const std::optional<std::string>&geometryShader = std::nullopt);
 
-	//TAKES CARE OF NOT DELETING THE POINTER RETURNED(DELETION HAPPENS WHEN THE PARENT SHADER PROGRAM CALLS ITS DESTRUCTOR!)
+	//TAKES CARE OF DELETING THE POINTER RETURNED(DELETION HAPPENS WHEN THIS SHADER PROGRAM CALLS ITS DESTRUCTOR!)
 	template<UniformTypes uniformType, bool throwNotFound = true>
 	UniformGL<uniformType> *getUniformHandle(std::string uniformName) {
 		THROW_ERRORS_GL(GLint uniformID = glGetUniformLocation(m_shaderProgramID, uniformName.c_str()));

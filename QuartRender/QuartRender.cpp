@@ -99,11 +99,16 @@ QUARTRENDER_API int quartRenderFuncName(createPlanet)(ErrorLogHandle errorLog, c
 int quartRenderFuncName(drawPlanet)(RendererHandle renderer, ErrorLogHandle errorLog, const char* planetClassName, const char* planetName, double posx, double posy)
 {
     CATCH_LOG_RETURN_GL(
-    glm::f64mat4 transform = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(posx, posy, 0.0f));
-    //we set the union to use the model transform part
-    DrawVariation variation;
-    variation.modelTransform = transform;
-    theDrawableFactoryManager->draw(GET_RENDERER_MULT(renderer), planetClassName, planetName, variation);
+        //using two separate transform matrices for future proofing.
+        glm::f64mat4 transform2D = glm::translate(glm::f64mat4(1.0), glm::f64vec3(posx, posy, 0.0));
+        glm::f64mat4 transform3D = glm::translate(glm::f64mat4(1.0),glm::f64vec3(posx,posy,0.0));
+        //rotate the sphere 90 degrees
+        transform3D = transform3D * glm::rotate(glm::f64mat4(1.0), glm::radians(90.0), glm::f64vec3(1.0,0.0,0.0));
+        //we set the union to use the model transform part
+        DrawVariation variation;
+        variation.modelTransform2D3DHybrid.modelTransform2D = transform2D;
+        variation.modelTransform2D3DHybrid.modelTransform3D = transform3D;
+        theDrawableFactoryManager->draw(GET_RENDERER_MULT(renderer), planetClassName, planetName, variation);
     , GET_ERROR_LOG(errorLog))
     return SUCCESS_TERMINATE_CODE_GL;
 }

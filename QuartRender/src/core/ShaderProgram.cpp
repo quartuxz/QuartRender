@@ -29,25 +29,37 @@ static GLuint m_compileShader(GLenum type, const std::string& source){
     return id;
 
 }
-void ShaderProgram::m_createShaderProgram()
+void ShaderProgram::m_createShaderProgram(bool usesGeometryShader)
 {
     THROW_ERRORS_GL(m_shaderProgramID = glCreateProgram());
 
     THROW_ERRORS_GL(glAttachShader(m_shaderProgramID, m_vertexShaderID));
     THROW_ERRORS_GL(glAttachShader(m_shaderProgramID, m_fragmentShaderID));
+    if (usesGeometryShader) {
+        THROW_ERRORS_GL(glAttachShader(m_shaderProgramID, m_geometryShaderID));
+    }
+
     THROW_ERRORS_GL(glLinkProgram(m_shaderProgramID));
     THROW_ERRORS_GL(glValidateProgram(m_shaderProgramID));
 
     THROW_ERRORS_GL(glDetachShader(m_shaderProgramID, m_vertexShaderID));
     THROW_ERRORS_GL(glDetachShader(m_shaderProgramID, m_fragmentShaderID));
+    if (usesGeometryShader) {
+        THROW_ERRORS_GL(glDetachShader(m_shaderProgramID, m_geometryShaderID));
+    }
+
 
     THROW_ERRORS_GL(glDeleteShader(m_vertexShaderID));
     THROW_ERRORS_GL(glDeleteShader(m_fragmentShaderID));
+    if (usesGeometryShader) {
+        THROW_ERRORS_GL(glDeleteShader(m_geometryShaderID));
+    }
+
 }
 
-ShaderProgram::ShaderProgram(const std::optional<std::string>& vertexShader, const std::optional<std::string>& fragmentShader)
+ShaderProgram::ShaderProgram(const std::optional<std::string>& vertexShader, const std::optional<std::string>& fragmentShader, const std::optional<std::string>& geometryShader)
 {
-	std::string vertexSource = m_defaultFragmentSource;
+	std::string vertexSource = m_defaultVertexSource;
 	if (vertexShader.has_value()) {
 		vertexSource = vertexShader.value();
 	}
@@ -57,9 +69,14 @@ ShaderProgram::ShaderProgram(const std::optional<std::string>& vertexShader, con
 		fragmentSource = fragmentShader.value();
 	}
 
+    if (geometryShader.has_value()) {
+        m_geometryShaderID = m_compileShader(GL_GEOMETRY_SHADER, loadFile(geometryShader.value()));
+    }
+
     m_vertexShaderID = m_compileShader(GL_VERTEX_SHADER, loadFile(vertexSource));
     m_fragmentShaderID =m_compileShader(GL_FRAGMENT_SHADER, loadFile(fragmentSource));
-    m_createShaderProgram();
+
+    m_createShaderProgram(geometryShader.has_value());
 }
 
 void ShaderProgram::bind()const
