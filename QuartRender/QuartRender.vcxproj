@@ -169,7 +169,6 @@
     <ClInclude Include="src\core\drawables\DrawableVariationUnion.h" />
     <ClInclude Include="src\core\drawables\factories\IClickableDrawableFactory.h" />
     <ClInclude Include="src\core\DrawImplUtils.h" />
-    <ClInclude Include="src\core\DrawUtils.h" />
     <ClInclude Include="src\core\input\IClickableDrawableManager.h" />
     <ClInclude Include="src\core\drawables\factories\PlanetDrawableFactory.h" />
     <ClInclude Include="src\core\drawables\drawable classes\PlanetDrawable.h" />

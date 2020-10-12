@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include "glm/glm.hpp"
 
+
+#include "../../DrawImplUtils.h"
 #include "../../VertexArray.h"
 #include "../../IndexBuffer.h"
 #include "../../ShaderProgram.h"
@@ -19,7 +21,9 @@ class PlanetDrawable final:
 private:
 	PlanetCharacteristics m_characteristics;
 
-	std::pair<std::vector<GLfloat>, std::vector<GLuint>> *m_outlineVerticesAndIndices;
+
+
+	IndicesAndVertices_t * m_outlineVerticesAndIndices;
 
 	VertexArray m_outlineVertexArray;
 	IndexBuffer m_outlineIndexBuffer;

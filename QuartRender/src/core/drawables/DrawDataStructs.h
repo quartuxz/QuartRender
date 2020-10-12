@@ -41,6 +41,7 @@ private:
 	double m_zoomLevel = 1;
 
 	//TODO: move this to a specific settings singleton class
+	//for program-wide settings
 	double m_initial3DZDisplacement = 10.0;
 	
 	glm::f64vec3 m_displacement = glm::f64vec3(0,0,0);

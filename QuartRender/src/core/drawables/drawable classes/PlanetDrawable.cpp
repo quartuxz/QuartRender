@@ -17,6 +17,7 @@ static const GLuint indices[] = {
 };
 
 
+
 static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generateTestOutline(int, double) {
 	typedef std::remove_reference<decltype(*generateTestOutline(0, 0))>::type rettype;
 
@@ -27,41 +28,39 @@ static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generateTestOutline
 	return retval;
 }
 
-//creates a 2d outline representation of vertices and indices for drawing, with the given amount of
-//points(>2) and radius(>0)
-static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generatePlanetOutLine(unsigned int points, double radius) {
-	typedef std::remove_reference<decltype(*generatePlanetOutLine(0,0))>::type rettype;
-	
+
+//TODO: move this to a more general file where it can be reused, candidate: DrawImplUtils.h
+//(remember to mark as inline and remove static).
+/// <summary>
+/// generates a circle of vertices, with points*3total GLfloats in the return value.
+/// </summary>
+/// <param name="points">>3, how much resolution the circle has.</param>
+/// <param name="radius">>0, how large is the distance from the centre to any of the vertices.</param>
+/// <param name="displacement">an added value to the position of every vertex.</param>
+/// <returns></returns>
+static std::vector<GLfloat> generateCircleVertices(unsigned int points, float radius, glm::vec3 displacement = glm::vec3(0.0f,0.0f,0.0f)) {
 	if (points < 3) {
 		throw std::invalid_argument("You must provide a number greater than 2 for points!");
 	}
-	
+
 	if (radius <= 0) {
 		throw std::invalid_argument("Radius must be greater than 0!");
 	}
-	
-	rettype *retval = new rettype();
 
+	std::vector<GLfloat> retval;
 
-	//reserve the total amount of vertex data(2 floats per vertex for x and y)
-	retval->first.reserve(points*2+2*2);
-	//reserve total amount of index data,
-	//each new pòint forms a triangle that is composed of 3 vertices, thus there are 3 indices per point
-	//(might be more or less this is just a rough reserve, didnt do the math properly)
-	retval->second.reserve(points*3);
+	//reserve the total amount of vertex data(3 floats per vertex for x, y and z)
+	retval.reserve(points * 3);
 
-
-	//add the circle centre vertex
-	retval->first.push_back(0);
-	retval->first.push_back(0);
-
-	double perPointAngle = (2*M_PI) / points;
+	//calculate the angle between consecutive lines running from the center
+	double perPointAngle = (2 * M_PI) / points;
 
 	//the position of the first point(point radius units above the "circle" centre)
-	double xfirst = 0, yfirst = radius;
+	float xfirst = displacement.x, yfirst = radius+displacement.y, zfirst = displacement.z;
 	//we add the first point as a vertex
-	retval->first.push_back(xfirst);
-	retval->first.push_back(yfirst);
+	retval.push_back(xfirst);
+	retval.push_back(yfirst);
+	retval.push_back(zfirst);
 
 	//we create an isoceles triangle to determine the position of each point relative to the first point,
 	//then we calculate all of its angles and sides to determine the lengths of the sides of a right
@@ -82,21 +81,57 @@ static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generatePlanetOutLi
 
 		//determine the length of the isoceles triangle formed between the center of the circle, the first point,
 		//and the current point i
-		double isoscelesBase = radius*sqrt(2-2*(cos(shortestAngleOffset)));
+		double isoscelesBase = radius * sqrt(2 - 2 * (cos(shortestAngleOffset)));
 		//determine top angle of right angle triangle sharing isocelesBase, axis aligned
 		double topAngle = (M_PI / 2) - ((M_PI - shortestAngleOffset) / 2);
 		//determine final offsets for position of new point
-		double xoffset = isoscelesBase * cos(topAngle);
-		double yoffset = isoscelesBase * sin(topAngle);
+		float xoffset = isoscelesBase * cos(topAngle);
+		float yoffset = isoscelesBase * sin(topAngle);
 		//generate the vertices
 		if (currentAngleOffsetIsGreaterThanPI) {
-			retval->first.push_back(xfirst-xoffset);
+			retval.push_back(xfirst - xoffset);
 		}
 		else {
-			retval->first.push_back(xfirst+xoffset);
+			retval.push_back(xfirst + xoffset);
 		}
-		
-		retval->first.push_back(yfirst-yoffset);
+
+		retval.push_back(yfirst - yoffset);
+		//everything is on the same z-plane
+		retval.push_back(zfirst);
+	}
+
+	return retval;
+}
+
+
+static IndicesAndVertices_t* generateSphere(unsigned int ringPoints, unsigned int rings, float radius) {
+	
+	glm::vec3 centerPoint = glm::vec3(0.0f, 0.0f, 0.0f);
+
+}
+
+
+//creates a 2d outline representation of vertices and indices for drawing, with the given amount of
+//points(>2) and radius(>0)
+static 	IndicesAndVertices_t* generatePlanetOutLine(unsigned int points, float radius) {
+	
+	IndicesAndVertices_t* retval = new 	IndicesAndVertices_t();
+
+	//add the circle centre vertex
+	addVecToVector(retval->first, glm::vec3(0.0f,0.0f,0.0f));
+	const auto& circleVertices = generateCircleVertices(points, radius);
+	retval->first.insert(retval->first.end(),circleVertices.begin(),circleVertices.end());
+
+	//reserve total amount of index data,
+	//each new pòint forms a triangle that is composed of 3 vertices, thus there are 3 indices per point
+	//(might be more or less this is just a rough reserve, didnt do the math properly)
+	retval->second.reserve(points*3);
+
+
+	
+	for (size_t i = 1; i < points; i++)
+	{
+	
 		//generate the indices in counter-clockwise order
 		//first the centre
 		retval->second.push_back(0);
@@ -135,7 +170,7 @@ PlanetDrawable::PlanetDrawable(const PlanetCharacteristics& characteristics):
 	//m_outlineIndexBuffer(indices, 6)
 {
 	BufferLayout layout;
-	layout.addBufferLayoutElement(BufferLayoutElement(2,GL_FLOAT,GL_FALSE));
+	layout.addBufferLayoutElement(BufferLayoutElement(3,GL_FLOAT,GL_FALSE));
 	m_outlineVertexArray.addBuffer(&m_outlineVertexBuffer, layout);
 
 	u_color = m_outlineProgram.getUniformHandle<UniformTypes::FLOAT_4>("u_color");

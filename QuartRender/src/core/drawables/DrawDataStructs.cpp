@@ -6,6 +6,12 @@ void DrawData::m_checkAndUpdateZoom()
 {
 }
 
+
+//TODO:lots of things in this implementation are unused, delete them or replace them.
+
+
+
+
 DrawData::DrawData(const glm::f64mat4& view, const glm::f64mat4& projection2D, const glm::f64mat4& projection3D) :
 	m_view(view),
 	m_projection2D(projection2D),
@@ -125,6 +131,8 @@ glm::f64mat4 DrawData::getView(DrawDataGetDimensions what2DOr3D, const std::vect
 		//we translate by the m_initial3DZDisplacement to be consistent with an "unzoomed" space
 		//this is the same as if we would set the zoomLevel to 1 and request zoom to be applied to the
 		//view matrix above
+		//this translation is also necesary as a basis for all 3D drawings, they require a distance from the POV
+		//to actually show all of their geometry, this number should go into some program-wide-settings class.
 		glm::f64mat4 noZoomMat = glm::translate(glm::f64mat4(1.0), glm::f64vec3(0.0, 0.0, -m_initial3DZDisplacement));
 		retval = noZoomMat * retval;
 	}

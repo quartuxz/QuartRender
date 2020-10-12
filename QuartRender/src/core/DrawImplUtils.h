@@ -14,3 +14,19 @@ typedef std::pair<std::vector<GLfloat>, std::vector<GLuint>> IndicesAndVertices_
 											ShaderProgram m_##name##Program; \
 											VertexBuffer m_##name##VertexBuffer;
 
+/// <summary>
+/// adds three elements contained in a glm::vec3 to a given vector.
+/// </summary>
+/// <param name="addTo"></param>
+/// <param name="added"></param>
+/// <param name="extraReserve">IMPORTANT: this specifies how much space to reserve+the current capacity
+/// default is 3; set to 0 if you have reserved space beforehand</param>
+inline void addVecToVector(std::vector<GLfloat> &addTo, const glm::vec3 &added, size_t extraReserve = 3) {
+	//worth noting that reserving capacity+0 is a no-op by an if check inside such function
+	//(atleast in visual studio 2019 compiler)
+	addTo.reserve(addTo.capacity()+extraReserve);
+	addTo.push_back(added.x);
+	addTo.push_back(added.y);
+	addTo.push_back(added.z);
+}
+

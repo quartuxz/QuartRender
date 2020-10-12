@@ -3,7 +3,7 @@
 
 #include <random>
 #include <chrono>
-
+#include <stdexcept>
 #include <cmath>
 #include <vector>
 
@@ -49,9 +49,13 @@ static const GLuint cubeIndices[] =
 	0, 5, 1
 };
 
-//TODO: figure out issues with faulty index generation
-//(ideally update to counter-clockwise)
-IndicesAndVertices_t* generateCube(float distanceToFace) {
+
+
+static IndicesAndVertices_t* generateCube(float distanceToFace) {
+	if (distanceToFace < 0.0f) {
+		throw std::invalid_argument("Distance to face must be greater than 0!");
+	}
+	
 	IndicesAndVertices_t* retval = new IndicesAndVertices_t();
 
 	//create a random number generator
@@ -68,18 +72,18 @@ IndicesAndVertices_t* generateCube(float distanceToFace) {
 		//right(same applies as above)
 		7,5,4,
 		7,4,6,
-		//front face
-		5,7,3,
-		1,5,3,
-		//back face
-		2,4,0,
-		4,2,6,
+		//front face 
+		22,23,21,
+		20,22,21,
+		//back face 
+		17,18,16,
+		18,17,19,
 		//top face
-		2,3,7,
-		7,6,2,
-		//down face
-		5,1,0,
-		5,0,4
+		12,13,15,
+		15,14,12,
+		//bottom face
+		8,10,9,
+		11,9,10
 	};
 
 
@@ -88,33 +92,48 @@ IndicesAndVertices_t* generateCube(float distanceToFace) {
 	retval->second = std::vector<GLuint>(indices, indices + 36);
 
 
-	//there are 8 vertices in a cube, each vertex has 3 floats for xy and z and 3 floats for colour
-	retval->first.reserve(8*3*2);
+	//there are 6 faces in a cube, each face has 4 independent vertices, each vertex has 3 floats
+	//por position, 3 for normals, and 3 for colour in that order
+	retval->first.reserve(24*3*3);
 
 
+	//we do a loop for every dimension
+	for (size_t i = 0; i < 3; i++)
+	{
+		//in both positive and negative values
+		for (int o = -1; o < 2; o+=2)
+		{
+			//this is the normal for the entire face(all the vertices)
+			glm::vec3 normal = {0.0f,0.0f,0.0f};
+			normal[i] = o;
+			
 
-	//these nested for loops iterate a total of 8 times over the contained code
-	//the code alternates between negative and positive values of xy and z to generate 
-	//positions for the vertices relative to the "centre" of the cube.
-	for (int x = -1; x < 2; x += 2) {
-		for (int y = -1; y < 2; y += 2) {
-			for (int z = -1; z < 2; z += 2) {
-				//a total of 3 floats per vertex correesponding to each dimension.
-				retval->first.push_back(x * distanceToFace);
-				retval->first.push_back(y * distanceToFace);
-				//TODO: REMOVE THE +1.0f ITS THERE FOR TESTING
-				//^^done, but may add it later
-				retval->first.push_back(z * distanceToFace);
+			for (int j = -1; j < 2; j += 2) {
+				for (int k = -1; k < 2; k+=2) {
+					//we generate the vertices
+					//the x value
+					retval->first.push_back((i==0?o:j)*distanceToFace);
+					//the y value
+					retval->first.push_back((i==1?o:(i==2?k:j))*distanceToFace);
+					//the z value
+					retval->first.push_back((i==2?o:k)*distanceToFace);
 
-				//then we do random color generation, 3 floats per vertex representing rgb
-				for (size_t i = 0; i < 3; i++)
-				{
-					retval->first.push_back(rand_distribution(rand_generator));
+					//we load the normals
+					retval->first.push_back(normal.x);
+					retval->first.push_back(normal.y);
+					retval->first.push_back(normal.z);
+
+					//then we do random color generation, 3 floats per vertex representing rgb
+					for (size_t l = 0; l < 3; l++)
+					{
+						retval->first.push_back(rand_distribution(rand_generator));
+					}
+
 				}
 			}
+			
 		}
 	}
-
 
 	return retval;
 }
@@ -127,18 +146,18 @@ TestCubeDrawable::TestCubeDrawable():
 	m_Program("./render_res/shaders/cubeVert.glsl", "./render_res/shaders/cubeFrag.glsl"),
 	m_VertexBuffer(m_cubeVerticesAndIndices->first.data(), m_cubeVerticesAndIndices->first.size()*sizeof(GLfloat))
 {
-	LOG_TO_CONSOLE("test cube drawable constructor initialization ended, body started!");
 	BufferLayout layout;
 	//we bind first the 3 position determining floats for xy and z.
 	layout.addBufferLayoutElement(BufferLayoutElement(3,GL_FLOAT,GL_FALSE));
-	//then the 3 elements of a color per vertex.
+	//then the normals
 	layout.addBufferLayoutElement(BufferLayoutElement(3,GL_FLOAT,GL_FALSE));
+	//finally the 3 elements of a color per vertex.
+	layout.addBufferLayoutElement(BufferLayoutElement(3, GL_FLOAT, GL_FALSE));
 	m_VertexArray.addBuffer(&m_VertexBuffer, layout);
 
 	u_MVP = m_Program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
 	u_model = m_Program.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_model");
 
-	LOG_TO_CONSOLE("test cube drawable constructor body ended!");
 }
 
 DrawableTypes TestCubeDrawable::getDrawableType() const noexcept
@@ -148,14 +167,11 @@ DrawableTypes TestCubeDrawable::getDrawableType() const noexcept
 
 void TestCubeDrawable::draw(const DrawData& drawData)
 {
-	LOG_TO_CONSOLE("draw started!");
 	glm::f64mat4 mvp = drawData.getViewProj(DrawDataGetDimensions::get3D, {DEFAULT_DRAW_GET_FLAGS})*m_drawVariation.modelTransform;
 
-	LOG_TO_CONSOLE("mvp calculated!");
 
 	u_MVP->setUniform(mvp);
 	u_model->setUniform(m_drawVariation.modelTransform);
-	LOG_TO_CONSOLE("uniform set!");
 
 	m_Program.bind();
 	m_VertexArray.bind();

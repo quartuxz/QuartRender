@@ -43,7 +43,8 @@ protected:
 	IRenderer(unsigned int sizex, unsigned int sizey);
 public:
 
-
+	IRenderer& operator=(IRenderer)= delete;
+	IRenderer(const IRenderer&) = delete;
 
 	virtual bool windowShouldClose();
 

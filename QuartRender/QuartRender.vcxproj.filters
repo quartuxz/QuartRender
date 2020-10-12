@@ -138,9 +138,6 @@
     <ClInclude Include="src\core\drawables\DrawableVariationUnion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\DrawUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\test\TestCubeDrawable.h">
       <Filter>Header Files</Filter>
     </ClInclude>

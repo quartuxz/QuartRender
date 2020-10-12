@@ -63,7 +63,6 @@ int quartRenderFuncName(drawTest)(RendererHandle renderer, ErrorLogHandle errorL
 QUARTRENDER_API int quartRenderFuncName(drawCubeTest)(RendererHandle renderer, ErrorLogHandle errorLog, double posx, double posy,double posz, double anglex, double angley, double anglez)
 {
     CATCH_LOG_RETURN_GL(
-        LOG_TO_CONSOLE("cube drawing started!");
         glm::f64mat4 translate = glm::translate(glm::f64mat4(1.0f), glm::f64vec3(posx, posy, posz));
         glm::f64mat4 rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(anglex), glm::f64vec3(1.0f, 0.0f, 0.0f));
         rotate = glm::rotate(glm::f64mat4(1.0), glm::radians(angley), glm::f64vec3(0.0f, 1.0f, 0.0f)) * rotate;
@@ -73,9 +72,7 @@ QUARTRENDER_API int quartRenderFuncName(drawCubeTest)(RendererHandle renderer, E
         
         DrawVariation variation;
         variation.modelTransform = transform;
-        LOG_TO_CONSOLE("variation created!");
         cubeFac.addDrawableToRenderer(GET_RENDERER_MULT(renderer), variation);
-        LOG_TO_CONSOLE("cube drawing finished!");
     ,
         GET_ERROR_LOG(errorLog)
         );

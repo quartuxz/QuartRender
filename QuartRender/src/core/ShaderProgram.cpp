@@ -60,8 +60,6 @@ ShaderProgram::ShaderProgram(const std::optional<std::string>& vertexShader, con
     m_vertexShaderID = m_compileShader(GL_VERTEX_SHADER, loadFile(vertexSource));
     m_fragmentShaderID =m_compileShader(GL_FRAGMENT_SHADER, loadFile(fragmentSource));
     m_createShaderProgram();
-
-    LOG_TO_CONSOLE("shader program construction ended.");
 }
 
 void ShaderProgram::bind()const
