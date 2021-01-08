@@ -1856,6 +1856,7 @@ CIMGUI_API void igNewFrame(void);
 CIMGUI_API void igEndFrame(void);
 CIMGUI_API void igRender(void);
 CIMGUI_API ImDrawData* igGetDrawData(void);
+//start copy
 CIMGUI_API void igShowDemoWindow(bool* p_open);
 CIMGUI_API void igShowAboutWindow(bool* p_open);
 CIMGUI_API void igShowMetricsWindow(bool* p_open);

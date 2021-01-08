@@ -22,9 +22,10 @@ class IRenderer
 protected:
 
 	//move these to some settings singleton class
+	//TODO: this was 45
 	float m_FOVInDegrees = 45.0f;
 	float m_zNear = 0.1f;
-	float m_zFar = 100.0f;
+	float m_zFar = 10000.0f;
 
 	GLFWwindow* m_window = nullptr;
 	std::queue<IDrawable*> m_drawQueue;

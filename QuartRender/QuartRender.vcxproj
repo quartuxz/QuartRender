@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cimgui\cimgui.h" />
+    <ClInclude Include="src\core\drawables\drawable classes\OrbitDrawable.h" />
     <ClInclude Include="src\core\drawables\DrawableVariationUnion.h" />
     <ClInclude Include="src\core\drawables\factories\IClickableDrawableFactory.h" />
     <ClInclude Include="src\core\DrawImplUtils.h" />
@@ -215,6 +216,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="cimgui\cimgui.cpp" />
+    <ClCompile Include="src\core\drawables\drawable classes\OrbitDrawable.cpp" />
     <ClCompile Include="src\core\drawables\DrawDataStructs.cpp" />
     <ClCompile Include="src\core\drawables\factories\IClickableDrawableFactory.cpp" />
     <ClCompile Include="src\core\input\IClickableDrawableManager.cpp" />

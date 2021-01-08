@@ -26,7 +26,7 @@ enum class DrawDataGetDimensions {
 #define DEFAULT_DRAW_GET_FLAGS DrawDataGetFlags::getDisplacement,DrawDataGetFlags::getZoomed
 #define ZPLANE_ZOOMED_DRAW_GET_FLAGS DrawDataGetFlags::getZPlaneZoomed, DrawDataGetFlags::getDisplacement
 
-
+//NOTE: all angles in radians for this struct
 struct PerspectiveProjection {
 private:
 	float m_FOVY, m_aspect, m_near, m_far;
@@ -61,12 +61,12 @@ private:
 	glm::f64mat4 m_projection2D;
 	PerspectiveProjection m_projection3D;
 
-
-	double m_zoomLevel = 1;
+	//AKA magnification factor
+	double m_zoomLevel = 0.000001;
 
 	//TODO: move this to a specific settings singleton class
 	//for program-wide settings
-	double m_initial3DZDisplacement = 10.0;
+	double m_initial3DZDisplacement = 1.0;
 	
 	glm::f64vec3 m_displacement = glm::f64vec3(0,0,0);
 
@@ -109,6 +109,8 @@ public:
 	/// <returns></returns>
 	glm::f64mat4 getProjection(DrawDataGetDimensions what2DOr3D)const noexcept;
 
+
+	const PerspectiveProjection& getPerspectiveProjection()const noexcept;
 
 	/// <summary>
 	/// calculates the view matrix given the flags on-the-fly with no caching

@@ -12,7 +12,6 @@ void IRenderer::m_clear() const
 IRenderer::IRenderer(unsigned int sizex, unsigned int sizey):
 	m_width(sizex),
 	m_height(sizey),
-	//TODO: actually implement the projection properly(second argument to this function is perspective projection matrix)
 	m_drawData(glm::f64mat4(1.0f), glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), PerspectiveProjection(glm::radians(m_FOVInDegrees), sizex / (float)sizey, m_zNear, m_zFar))
 {
 	//FOR TESTING!
@@ -37,7 +36,6 @@ bool IRenderer::windowShouldClose()
 	return glfwWindowShouldClose(m_window);
 }
 
-//TODO: implement 3d projection matrix and integrate with IDrawable to distinguish which to use
 void IRenderer::display()
 {
 
@@ -47,15 +45,6 @@ void IRenderer::display()
 	while (!m_drawQueue.empty()) {
 		if (m_drawQueue.front()->setAndPop()) {
 			m_drawQueue.front()->draw(m_drawData);
-			/*//old code no longer needed as we dont discriminate who gets sent what drawData we just let
-			//the drawables choose
-			if (m_drawQueue.front()->getDrawableType() == DrawableTypes::drawable2D ) {
-				
-			}//TODO: implement 3d drawable drawing
-			else {
-
-			}
-			*/
 
 		}		
 		m_drawQueue.pop();

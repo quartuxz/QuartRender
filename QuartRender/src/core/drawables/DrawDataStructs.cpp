@@ -70,6 +70,11 @@ glm::f64mat4 DrawData::getProjection(DrawDataGetDimensions what2DOr3D) const noe
 	}
 }
 
+const PerspectiveProjection& DrawData::getPerspectiveProjection() const noexcept
+{
+	return m_projection3D;
+}
+
 glm::f64mat4 DrawData::getView(DrawDataGetDimensions what2DOr3D, const std::vector<DrawDataGetFlags>& flags) const noexcept
 {
 	glm::f64mat4 retval = m_view;

@@ -21,11 +21,13 @@ class PlanetDrawable final:
 private:
 	PlanetCharacteristics m_characteristics;
 
+	double m_screenSizeForPlanetOutline;
+
 
 
 	IndicesAndVertices_t * m_outlineVerticesAndIndices;
 	IndicesAndVertices_t* m_planetSphereVerticesAndIndices;
-
+	IndicesAndVertices_t* m_orbitLineVerticesAndIndicies;
 
 	VertexArray m_outlineVertexArray;
 	IndexBuffer m_outlineIndexBuffer;
@@ -33,6 +35,7 @@ private:
 	VertexBuffer m_outlineVertexBuffer;
 
 	DEFAULT_FIELDS_FOR_DRAWABLE(planetSphere)
+	DEFAULT_FIELDS_FOR_DRAWABLE(orbitLine)
 
 	//for the outline
 	UniformGL<UniformTypes::FLOAT_4>* u_color;
@@ -42,6 +45,11 @@ private:
 	//for the sphere
 	u_MVP_t *u_3DMVP;
 	u_MVP_t *u_model;
+
+	//for the orbit
+	UniformGL<UniformTypes::FLOAT_4> *u_orbitLineColor;
+	u_MVP_t* u_orbitLineMVP;
+
 public:
 	PlanetDrawable(const PlanetCharacteristics &characteristics);
 	bool setAndPop()override;

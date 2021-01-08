@@ -8,6 +8,11 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size)
     THROW_ERRORS_GL(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }
 
+VertexBuffer::VertexBuffer(const std::vector<GLfloat>& vertices):
+    VertexBuffer(vertices.data(), vertices.)
+{
+}
+
 VertexBuffer::~VertexBuffer()
 {
     THROW_ERRORS_GL(glDeleteBuffers(1,&m_GLID));

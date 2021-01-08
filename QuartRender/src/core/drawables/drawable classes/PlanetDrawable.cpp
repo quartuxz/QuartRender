@@ -20,10 +20,9 @@ static const GLuint indices[] = {
 
 
 
-static std::pair<std::vector<GLfloat>, std::vector<GLuint>>* generateTestOutline(int, double) {
-	typedef std::remove_reference<decltype(*generateTestOutline(0, 0))>::type rettype;
+static IndicesAndVertices_t* generateTestOutline(int, double) {
 
-	rettype* retval = new rettype();
+	IndicesAndVertices_t* retval = new IndicesAndVertices_t();
 	retval->first = std::vector<GLfloat>(positions, positions + sizeof(positions)/sizeof(positions[0]));
 	retval->second = std::vector<GLuint>(indices, indices + sizeof(indices)/sizeof(indices[0]));
 	
@@ -104,6 +103,30 @@ static std::vector<GLfloat> generateCircleVertices(unsigned int points, float ra
 		retval.push_back(zfirst);
 	}
 
+	return retval;
+}
+
+
+//TODO: add an orbit eccentricity setting
+/// <summary>
+/// Creates a simple circular orbit without eccentricity(for now!)
+/// </summary>
+/// <param name="points">resolution of the orbit in terms of line segments</param>
+/// <param name="radius">how large the orbit is</param>
+/// <returns>an orbit line</returns>
+static IndicesAndVertices_t* generateOrbit(unsigned int points, float radius) {
+	IndicesAndVertices_t* retval;
+	retval = new IndicesAndVertices_t();
+	retval->first = generateCircleVertices(points, radius);
+	//we create a simple 2d line to denote an orbit(with circle vertices and line indices)
+	for (size_t i = 0; i < points-1; i++)
+	{
+		retval->second.push_back(i);
+		retval->second.push_back(i+1);
+	}
+
+	retval->second.push_back(points-1);
+	retval->second.push_back(0);
 	return retval;
 }
 
@@ -280,7 +303,7 @@ static 	IndicesAndVertices_t* generatePlanetOutLine(unsigned int points, float r
 	retval->first.insert(retval->first.end(),circleVertices.begin(),circleVertices.end());
 
 	//reserve total amount of index data,
-	//each new pòint forms a triangle that is composed of 3 vertices, thus there are 3 indices per point
+	//each new point forms a triangle that is composed of 3 vertices, thus there are 3 indices per point
 	//(might be more or less this is just a rough reserve, didnt do the math properly)
 	retval->second.reserve(points*3);
 
@@ -314,12 +337,29 @@ static 	IndicesAndVertices_t* generatePlanetOutLine(unsigned int points, float r
 	return retval;
 }
 
+//TODO:
+//Determine minimum size for an outline on-screen(from a practical point of view, e.g make it too small and its difficult to see)
+//Determine maximum size in the same way
+//Let minimum be called s and maximum S
+//implement a function that takes a physical size(realSize) and satisfies lim x->inf f(x)<=S
+//and also that lim x->0+ f(x)>=s,
+//let it be continuous in (1/inf,inf), let f'(x) > 0 and f(x) >= s for all X in (1/inf, inf)
+//let it be undefined when x<=0 and let the c++ function throw an exception.
+double createScreenSizeForPlanet(double realSize) {
+	if (realSize<=0) {
+		throw std::invalid_argument("realSize must be greater than 0.");
+	}
+	double retval = 0.5;
+	return retval;
+}
 
 
 PlanetDrawable::PlanetDrawable(const PlanetCharacteristics& characteristics) :
 	m_characteristics(characteristics),
+	m_screenSizeForPlanetOutline(createScreenSizeForPlanet(characteristics.radius)),
 	//initialize the outline vertices, indices and shaders
-	m_outlineVerticesAndIndices(generatePlanetOutLine(30, 0.2)),
+	//TODO: tweak and set the parameters for point resolution of the circles and radius(for all circular drawables)
+	m_outlineVerticesAndIndices(generatePlanetOutLine(30, 1.0)),
 	m_outlineIndexBuffer(m_outlineVerticesAndIndices->second.data(), m_outlineVerticesAndIndices->second.size()),
 	m_outlineProgram("./render_res/shaders/flatTestVert.glsl", "./render_res/shaders/flatTestFrag.glsl"),
 	m_outlineVertexBuffer(m_outlineVerticesAndIndices->first.data(), m_outlineVerticesAndIndices->first.size() * sizeof(GLfloat)),
@@ -327,26 +367,41 @@ PlanetDrawable::PlanetDrawable(const PlanetCharacteristics& characteristics) :
 	//m_outlineIndexBuffer(indices, 6)
 	//initialize all the sphere  vertices, indices and shaders
 	//TODO: maybe move these values for sphere resoultion to the settings class.
-	m_planetSphereVerticesAndIndices(generateSphere(40, 41, 1.0f)),
+	m_planetSphereVerticesAndIndices(generateSphere(40, 41, 1.0)),
 	m_planetSphereIndexBuffer(m_planetSphereVerticesAndIndices->second.data(), m_planetSphereVerticesAndIndices->second.size()),
 	m_planetSphereProgram("./render_res/shaders/planetSphereVert.glsl", "./render_res/shaders/planetSphereFrag.glsl"),
-	m_planetSphereVertexBuffer(m_planetSphereVerticesAndIndices->first.data(), m_planetSphereVerticesAndIndices->first.size()*sizeof(GLfloat))
+	m_planetSphereVertexBuffer(m_planetSphereVerticesAndIndices->first.data(), m_planetSphereVerticesAndIndices->first.size() * sizeof(GLfloat)),
+
+	//initialize all the orbit vertices, indices and shaders
+	m_orbitLineVerticesAndIndicies(generateOrbit(10, 1)),
+	m_orbitLineIndexBuffer(m_orbitLineVerticesAndIndicies->second.data(), m_orbitLineVerticesAndIndicies->second.size()),
+	m_orbitLineProgram("./render_res/shaders/flatTestVert.glsl", "./render_res/shaders/flatTestFrag.glsl"),
+	m_orbitLineVertexBuffer(m_orbitLineVerticesAndIndicies->first.data(), m_orbitLineVerticesAndIndicies->first.size()*sizeof(GLfloat))
+
 {
 	BufferLayout outlineLayout;
 	outlineLayout.addBufferLayoutElement(BufferLayoutElement(3,GL_FLOAT,GL_FALSE));
 	m_outlineVertexArray.addBuffer(&m_outlineVertexBuffer, outlineLayout);
+
+	u_color = m_outlineProgram.getUniformHandle<UniformTypes::FLOAT_4>("u_color");
+	u_MVP = m_outlineProgram.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
 
 	//the same as above, they are separated for future changes if any(may add vertex colour to the sphere)
 	BufferLayout sphereLayout;
 	sphereLayout.addBufferLayoutElement(BufferLayoutElement(3,GL_FLOAT,GL_FALSE));
 	m_planetSphereVertexArray.addBuffer(&m_planetSphereVertexBuffer, sphereLayout);
 
-	u_color = m_outlineProgram.getUniformHandle<UniformTypes::FLOAT_4>("u_color");
-	u_MVP = m_outlineProgram.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
-
 	u_3DMVP = m_planetSphereProgram.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_3DMVP");
 	u_model = m_planetSphereProgram.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_model");
-
+	
+	//create the bufferLayout for the orbit
+	BufferLayout orbitLineLayout;
+	orbitLineLayout.addBufferLayoutElement(BufferLayoutElement(3, GL_FLOAT, GL_FALSE));
+	m_orbitLineVertexArray.addBuffer(&m_orbitLineVertexBuffer, orbitLineLayout);
+	
+	u_orbitLineColor = m_orbitLineProgram.getUniformHandle<UniformTypes::FLOAT_4>("u_color");
+	u_orbitLineMVP = m_orbitLineProgram.getUniformHandle<UniformTypes::FLOAT_MAT_4x4>("u_MVP");
+	
 }
 
 bool PlanetDrawable::setAndPop()
@@ -359,35 +414,60 @@ DrawableTypes PlanetDrawable::getDrawableType() const noexcept
 	return DrawableTypes::drawable2D;
 }
 
-//TODO: implement smooth transition between outline and planetSphere.
+
 void PlanetDrawable::draw(const DrawData& drawData)
 {
-	
-	//unscales the shape so that is does not change in size when zooming as it behaves more like a UI
-	//element than an actual graphical entity(a 2d planet is just there for visualization)
-	glm::f64mat4 new2DModelTransform = glm::scale(m_drawVariation.modelTransform2D3DHybrid.modelTransform2D, glm::f64vec3(1/drawData.getZoom(),1/drawData.getZoom(),1));
-	
-	glm::f64mat4 mvp = drawData.getViewProj(DrawDataGetDimensions::get2D,{DEFAULT_DRAW_GET_FLAGS}) * new2DModelTransform;
+
+	//selectively draw the planet outline or the 3d planet sphere depending on zoom level
+	if (m_screenSizeForPlanetOutline > ((m_characteristics.radius * drawData.getZoom()) / tan(drawData.getPerspectiveProjection().getFOVX() / 2))) {
+		
+
+		//unscales the shape so that is does not change in size when zooming as it behaves more like a UI
+		//element than an actual graphical entity(a 2d planet is just there for visualization)
+		glm::f64mat4 new2DModelTransform = m_drawVariation.modelTransform2D3DHybrid.modelTransform2D*glm::scale(glm::f64mat4(1.0f), glm::f64vec3(1 / drawData.getZoom(), 1 / drawData.getZoom(), 1))* glm::scale(glm::f64mat4(1.0f), glm::f64vec3(m_screenSizeForPlanetOutline));
+		glm::f64mat4 mvp = drawData.getViewProj(DrawDataGetDimensions::get2D, { DEFAULT_DRAW_GET_FLAGS }) * new2DModelTransform;
+		
+		//setting full opacity
+		u_color->setUniform(0.8f, 0.8f, 0.6f, 0.5f);
+		//drawing the planet outline
+		u_MVP->setUniform(mvp);
+
+		m_outlineProgram.bind();
+		m_outlineVertexArray.bind();
+		m_outlineIndexBuffer.bind();
+		THROW_ERRORS_GL_FAST(glDrawElements(GL_TRIANGLES, m_outlineIndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
+	}
+	else {
+		//drawing the sphere
+		glm::f64mat4 mvp3D = drawData.getViewProj(DrawDataGetDimensions::get3D, { DrawDataGetFlags::getDisplacement, DrawDataGetFlags::getZoomed }) * m_drawVariation.modelTransform2D3DHybrid.modelTransform3D * glm::scale(glm::f64mat4(1.0f), glm::f64vec3(m_characteristics.radius));
+
+		u_3DMVP->setUniform(mvp3D);
+		u_model->setUniform(m_drawVariation.modelTransform2D3DHybrid.modelTransform3D);
+
+		m_planetSphereProgram.bind();
+		m_planetSphereVertexArray.bind();
+		m_planetSphereIndexBuffer.bind();
+		THROW_ERRORS_GL_FAST(glDrawElements(GL_TRIANGLES, m_planetSphereIndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
+	}
 
 
-	u_color->setUniform(0.8f, 0.8f, 0.6f, 1.0f);
-	u_MVP->setUniform(mvp);
+	//TODO: move orbit drawing to separate Drawable
+	//AND figure out how to draw an orbit line of constant width for any given zoom value
+	//drawing orbit
+	glm::f64mat4 orbitLineMVP = drawData.getViewProj(DrawDataGetDimensions::get2D, {DEFAULT_DRAW_GET_FLAGS});
 
-	m_outlineProgram.bind();
-	m_outlineVertexArray.bind();
-	m_outlineIndexBuffer.bind();
-	//THROW_ERRORS_GL_FAST(glDrawElements(GL_TRIANGLES, m_outlineIndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
+	THROW_ERRORS_GL_FAST(glLineWidth(5));
+	u_orbitLineColor->setUniform(0.4f, 0.4f, 0.8f, 1.0f);
+	u_orbitLineMVP->setUniform(orbitLineMVP);
 
-	//drawing the sphere
-	glm::f64mat4 mvp3D = drawData.getViewProj(DrawDataGetDimensions::get3D, {DrawDataGetFlags::getDisplacement, DrawDataGetFlags::getFOVZoomed})* m_drawVariation.modelTransform2D3DHybrid.modelTransform3D;
+	m_orbitLineProgram.bind();
+	m_orbitLineVertexArray.bind();
+	m_orbitLineIndexBuffer.bind();
+	//temporarlily disabled obrit drawing
+	//THROW_ERRORS_GL_FAST(glDrawElements(GL_LINES, m_orbitLineIndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
 
-	u_3DMVP->setUniform(mvp3D);
-	u_model->setUniform(m_drawVariation.modelTransform2D3DHybrid.modelTransform3D);
 
-	m_planetSphereProgram.bind();
-	m_planetSphereVertexArray.bind();
-	m_planetSphereIndexBuffer.bind();
-	THROW_ERRORS_GL_FAST(glDrawElements(GL_TRIANGLES, m_planetSphereIndexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
+
 }
 
 PlanetDrawable::~PlanetDrawable()

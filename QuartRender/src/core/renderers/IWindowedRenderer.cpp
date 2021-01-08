@@ -39,7 +39,7 @@ IWindowedRenderer::IWindowedRenderer(unsigned int sizex, unsigned int sizey):
     glfwSwapInterval(0);
 
 
-    //TODO: maybe these should be in IRendererer? idk
+    //TODO: maybe these should be in IRendererer? i   dk
     THROW_ERRORS_GL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     THROW_ERRORS_GL(glEnable(GL_BLEND));
     THROW_ERRORS_GL(glEnable(GL_DEPTH_TEST));
